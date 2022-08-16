@@ -1,0 +1,14 @@
+version: "3"
+services:
+    asr_system:
+        build:
+            context: .
+            dockerfile: docker/asr_system/Dockerfile
+        runtime: nvidia
+        environment:
+            - NVIDIA_VISIBLE_DEVICES=all
+        ports:
+            - "5000:5000"
+        command: "python fast_server.py"
+        volumes:
+            - ./src:/app/src
