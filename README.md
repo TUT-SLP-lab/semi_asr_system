@@ -33,3 +33,7 @@
     ```
     python test/asr_system/unit_test.py
     ```
+
+## Outline への接続方法
+
+`src/.env.default`を`src/.env`に変換して、Outline の Access Token を挿入してください。
