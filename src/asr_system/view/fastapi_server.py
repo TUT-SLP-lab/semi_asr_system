@@ -9,7 +9,6 @@ app = FastAPI()
 class Audio(BaseModel):
     attribute: str
     audio_path: str
-    text_path: str
 
 
 job = Controller()
