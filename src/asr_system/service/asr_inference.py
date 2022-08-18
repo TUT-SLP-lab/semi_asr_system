@@ -15,9 +15,7 @@ class ASRInference:
             self.hyp.append((result[0])[0])
         return self.hyp
     
-    def print_result(self):
-        for i in range(len(self.hyp)):
-            print('ref:', self.text[i])
-            print('hyp:', self.hyp[i])
-            print()
-    
+    def output_file(self, fname):
+        h = '\n'.join(self.hyp)
+        with open(fname, mode='w') as f:
+            f.write(h)

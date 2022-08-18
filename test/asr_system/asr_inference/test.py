@@ -10,17 +10,12 @@ print(sys.path)
 from asr_system.service.asr_inference import ASRInference
 
 if __name__=="__main__":
-    text_path = 'data/text'
     wav_path = ['data/A01M0041_1.wav', 'data/A01M0041_2.wav', 'data/A01M0041_3.wav', 'data/A01M0041_4.wav', 'data/A01M0041_5.wav']
     config_path = 'data/config.yaml'
     model_path = 'data/40epoch.pth'
-    text = []
-    with open(text_path, mode='r') as f:
-        lines = f.readlines()
-        for line in lines:
-            text.append(line.split()[1])
-    #print(text)
+    file_ = 'test.txt'
 
-    #asr = ASRInference()
-    hyp = ASRInference().speech2text(wav_path, config_path, model_path)
+    asr = ASRInference()
+    hyp = asr.speech2text(wav_path, config_path, model_path)
     print(hyp)
+    asr.output_file(file_name)
