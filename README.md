@@ -9,6 +9,13 @@
 
 ## LocalでASR serverを立ち上げる方法
 
+    ```python
+        # IP Addressの修正
+        ASR_SYSTEM_IP = "0.0.0.0"
+        ↓
+        ASR_SYSTEM_IP = "127.0.0.1"
+    ```
+
     ```bash
     # サーバの立ち上げ
     python src/run_asr_server
