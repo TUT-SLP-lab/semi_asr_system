@@ -1,0 +1,19 @@
+from dotenv import load_dotenv
+
+import os
+
+load_dotenv()
+
+ASR_SYSTEM_IP = "0.0.0.0"
+ASR_SYSTEM_PORT = 5000
+
+
+DISPATCHER_IP = "0.0.0.0"
+DISPATCHER_PORT = 5001
+
+OUTLINE_ACCESS_TOKEN = os.getenv("OUTLINE_ACCESS_TOKEN")
+OUTLINE_ADDRESS = "133.15.57.8"
+OUTLINE_PORT = 80
+
+
+COLLECTION_NAME = "ゼミ"
