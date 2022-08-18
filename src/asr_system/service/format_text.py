@@ -7,4 +7,3 @@ class FormatText:
 
     def format(self):
         pass
-
