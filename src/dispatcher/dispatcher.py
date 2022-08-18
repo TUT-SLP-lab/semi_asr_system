@@ -1,30 +1,23 @@
-from typing import Union
 from fastapi import FastAPI
-from pydantic import BaseModel
 import db
-import models
+import requests
 
 app = FastAPI()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.post("/create")
-def createAudioData(data: models.Audio):
-    id = db.createAudioData(data)
-    return {"id": id}
-
-
-@app.put("/update")
-def updateTextFilePath(_id, path):
-    data = db.updateTextFilePath(_id, path)
+@app.put("/api/update")
+def updateTextFilePath(path):
+    data = db.updateTextFilePath(path)
     return {"updated": True, "updated_count": data}
 
 
-@app.get("/audio")
-def getAudioASRData(_id):
-    data = db.getAudioData(_id)
+# @app.post("/api/audio")
+# def postAudioData(_id):
+#     data = db.getAudioData(_id)
+#     return data
+
+
+@app.post("/api/id")
+def postRecordData(_id):
+    data = db.postRecordData(_id)
     return data
