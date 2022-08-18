@@ -29,6 +29,27 @@ class OutlineClient:
             "accept": "application/json",
         }
 
+        # JWT token のエラーハンドリング
+        status_code, contents = self.confirm_user()
+        if status_code != 200:
+            raise RuntimeError(contents["message"])
+
+    def confirm_user(self) -> Tuple[int, Dict]:
+        """
+        get user information from access token
+
+        Args:
+        Return:
+            int: status code
+            json: result contents
+        """
+        result = requests.post(
+            f"{self.endpoint}/auth.info",
+            headers=self.headers,
+        )
+
+        return result.status_code, json.loads(result.content)
+
     def collection_list(self) -> Tuple[int, Dict]:
         """
         get collection list
@@ -46,12 +67,10 @@ class OutlineClient:
 
         return result.status_code, json.loads(result.content)
 
-    def create_document(
-        self, title: str, text: str, collection_name: str
-    ) -> Tuple[int, Dict]:
+    def create_document(self, title: str, text: str, collection_name: str) -> Tuple[int, Dict]:
         """
         create document in Outline
-        
+
         Args:
             tilte (str): title of document
             text (str): content of document
@@ -91,12 +110,10 @@ class OutlineClient:
             collection_list(json): json collection information
             collection_name(str): collection name
         Return:
-            str: collection id 
+            str: collection id
         """
         for data in collection_list["data"]:
             if data["name"] == collenction_name:
                 return data["id"]
 
-        raise RuntimeError(
-            f"collection name ;{collenction_name} is not exist in OutLine"
-        )
+        raise RuntimeError(f"collection name ;{collenction_name} is not exist in OutLine")
