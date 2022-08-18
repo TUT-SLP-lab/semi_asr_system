@@ -9,7 +9,6 @@ app = FastAPI()
 class Audio(BaseModel):
     attribute: str
     audio_path: str
-    text_path: str
 
 
 job = Controller()
@@ -24,6 +23,5 @@ async def asr_inference(audio: Audio, background_task: BackgroundTasks):
         return {
             "attribute": audio.attribute,
             "audio_path": audio.audio_path,
-            "text_path": audio.text_path,
         }
     return {"message": "job is running"}
