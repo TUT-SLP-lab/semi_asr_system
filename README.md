@@ -7,28 +7,41 @@
 
 # asr system
 
-## fast api の立ち上げ方法
+## LocalでASR serverを立ち上げる方法
 
-0. Local で API を立ち上げる場合(Option, 1~2 を skip)
+    ```bash
+    # サーバの立ち上げ
+    python src/run_asr_server
 
+    # APIを叩く
+    python test/asr_system/unit_test.py
     ```
-    python src/run_asr_server.py
+
+## docker container でfast api の立ち上げ方法
+
+1. (1)Imageの取得
+
+    ```bash
+    docker login 
+    docker pull kinouchi1000/espnet_asr_server
     ```
 
-1. image のビルド（めっちゃ時間かかるかも）
+2. (2)Image のビルド
 
-    ```
+    1の Imageの取得ができていればやる必要がありません。（めっちゃ時間かかる）
+
+    ```bash
     docker compose build asr_system
 
     ```
 
-2. コンテナ立ち上げ
+3. コンテナ立ち上げ
 
     ```
     docker compose up -d asr_system
     ```
 
-3. API を試しに叩く
+4. API を試しに叩く
 
     ```
     python test/asr_system/unit_test.py
