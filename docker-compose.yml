@@ -4,11 +4,12 @@ services:
         build:
             context: .
             dockerfile: docker/asr_system/Dockerfile
+        image: kinouchi1000/espnet_asr_server
         runtime: nvidia
         environment:
             - NVIDIA_VISIBLE_DEVICES=all
         ports:
             - "5000:5000"
-        command: "python fast_server.py"
+        command: "python run_asr_server.py"
         volumes:
-            - ./src:/app/src
+            - ./src:/app
