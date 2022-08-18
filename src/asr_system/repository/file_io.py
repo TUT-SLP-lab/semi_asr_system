@@ -28,7 +28,11 @@ class FileIO:
         return path_list
 
     @staticmethod
-    def output_text_file(text_list: list, fname: str):
+    def output_text_file(text_list: list, fpath: str):
+        """
+        改行を含んでfpathで指定されたファイルに書き込む
+        """
+
         h = "\n".join(text_list)
-        with open(fname, mode="w") as f:
+        with open(fpath, mode="w") as f:
             f.write(h)
