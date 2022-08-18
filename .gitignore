@@ -149,3 +149,6 @@ pip-selfcheck.json
 
 etc/
 share/
+
+test/test_data
+test/asr_inference/data
