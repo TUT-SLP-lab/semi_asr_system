@@ -16,7 +16,7 @@ load_dotenv()
 def postQueueServer(post_id: ObjectId) -> None:
     # TODO: get server ip from dotenv
     url = f'http://{os.getenv("DISPATCHER_IP")}:{int(os.getenv("DISPATCHER_PORT"))}/api/id'
-    payload = {'_id': str(post_id)}
+    payload = {"_id": str(post_id)}
     requests.post(url, json=payload)
 
 
@@ -37,8 +37,7 @@ def registData(attribute: str, audio_path: str) -> None:
 class Recorder:
     def __init__(self):
         self.record = None
-        self.tmpdir = os.path.join(
-            os.path.abspath(os.path.curdir), "record-data")
+        self.tmpdir = os.path.join(os.path.abspath(os.path.curdir), "record-data")
         self.cmd = "bash recording.sh"
         self.output_dir = os.path.abspath(os.getenv("AUDIO_OUTPUT_DIR"))
         os.makedirs(self.output_dir, exist_ok=True)
@@ -48,10 +47,8 @@ class Recorder:
         if self.record is None:
             self.presenter = presenter
             self.attribute = f"{datetime.date.today()}_{presenter}"
-            self.tmp_file_path = os.path.join(
-                self.tmpdir, f"{self.attribute}.wav")
-            self.output_file_path = os.path.join(
-                self.output_dir, f"{self.attribute}.wav")
+            self.tmp_file_path = os.path.join(self.tmpdir, f"{self.attribute}.wav")
+            self.output_file_path = os.path.join(self.output_dir, f"{self.attribute}.wav")
 
             # subprocessで録音処理を実行
             self.record = subprocess.Popen(f"exec {self.cmd}", shell=True)
@@ -61,8 +58,7 @@ class Recorder:
             self.record.kill()  # 録音を停止
             # recording.sh内でtmp.wavに音声を書き込んでいるので、
             # 正式な形にrenameする必要がある
-            shutil.move(os.path.join(self.tmpdir, "tmp.wav"),
-                        self.output_file_path)
+            shutil.move(os.path.join(self.tmpdir, "tmp.wav"), self.output_file_path)
             # DBに登録
             registData(attribute=self.attribute, audio_path=self.tmp_file_path)
 
@@ -90,15 +86,14 @@ class ThreadManager:
 
     def stop_recording(self) -> None:
         self.recorder.stop()
-        del(self.recorder)
+        del self.recorder
         self.recorder = None
 
 
 def main():
     st.thread_manager = ThreadManager()
 
-    text_presenter = st.text_input(
-        "Presenter", key="presenter", disabled=st.thread_manager.is_running())
+    text_presenter = st.text_input("Presenter", key="presenter", disabled=st.thread_manager.is_running())
 
     # 録音を制御する部分
     if st.button("Start Recording", disabled=st.thread_manager.is_running()):
