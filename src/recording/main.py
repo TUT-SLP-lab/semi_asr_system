@@ -6,21 +6,19 @@ import os
 import time
 
 
-class Recorder():
+class Recorder:
     def __init__(self, presenter: str):
-        self.cmd = 'parec --format=wav --device=DummyOutput0.monitor'
+        self.cmd = "parec --format=wav --device=DummyOutput0.monitor"
         self.record = None
-        self.basedir = os.path.dirname('record-data')
+        self.basedir = os.path.dirname("record-data")
 
     def start(self, presenter: str):
         if self.record is None:
             self.presenter = presenter
-            self.attribute = f'{datetime.date.today()}_{presenter}'
-            self.output_file_path = os.path.join(
-                self.basedir, f'{self.attribute}.wav')
-            self.output_file = open(self.output_file_path, 'wb')
-            self.record = subprocess.Popen(
-                f'exec {self.cmd}', stdout=self.output_file, shell=True)
+            self.attribute = f"{datetime.date.today()}_{presenter}"
+            self.output_file_path = os.path.join(self.basedir, f"{self.attribute}.wav")
+            self.output_file = open(self.output_file_path, "wb")
+            self.record = subprocess.Popen(f"exec {self.cmd}", stdout=self.output_file, shell=True)
 
     def stop(self):
         if self.record is not None:
@@ -51,7 +49,7 @@ class ThreadManager:
 
     def stop_recording(self):
         self.recorder.stop()
-        del(self.recorder)
+        del self.recorder
         self.recorder = None
 
 
@@ -59,30 +57,29 @@ def main():
     thread_manager = ThreadManager()
 
     # 録音を制御する部分
-    st.text_input('Presenter', key='presenter',
-                  disabled=thread_manager.is_running())
-    if st.button('Start Recording', disabled=thread_manager.is_running()):
+    st.text_input("Presenter", key="presenter", disabled=thread_manager.is_running())
+    if st.button("Start Recording", disabled=thread_manager.is_running()):
         recorder = thread_manager.start_recording()
         st.experimental_rerun()
 
-    if st.button('Stop Recording', disabled=not thread_manager.is_running()):
+    if st.button("Stop Recording", disabled=not thread_manager.is_running()):
         thread_manager.stop_recording()
         st.experimental_rerun()
 
     if not thread_manager.is_running():
-        st.markdown('No recorder running.')
+        st.markdown("No recorder running.")
     else:
         recorder = thread_manager.get_recorder()
-        presenter = st.session_state['presenter']
-        st.markdown(f'Presenter: {presenter}')
+        presenter = st.session_state["presenter"]
+        st.markdown(f"Presenter: {presenter}")
         placeholder = st.empty()
         if recorder.is_alive():
-            placeholder.markdown('Recording')
+            placeholder.markdown("Recording")
 
     # 別セッションでの更新に追従するために、定期的にrerunする
     time.sleep(30)
     st.experimental_rerun()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
