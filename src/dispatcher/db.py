@@ -1,4 +1,5 @@
 import pymongo
+from bson.objectid import ObjectId
 
 mongoURL = "mongodb://localhost:27017"
 client = pymongo.MongoClient(mongoURL)
@@ -7,18 +8,15 @@ db = client["asr_queue"]
 collection = db["queue"]
 
 
-# def createAudioData(data):
-#     data = dict(data)
-#     response = collection.insert_one(data)
-#     return str(response.inserted_id)
+def updateTextFilePath(_id, path):
+    id = ObjectId(_id)
+    response = collection.update_one({"_id": id}, {"$set": {"text_path": path, "status": "completed"}})
+    return response.modified_count
 
 
-# def getAudioData(data):
-#     response = collection.find_one({"attribute": data})
-#     response["_id"] = str(response["_id"])
-#     return response
-
-
-# mock_data = {"attribute": "test3", "audio_path": "/test/hoge4.wave"}
-
-# collection.insert_one(mock_data)
+def getAudioData(_id):
+    id = ObjectId(_id)
+    response = collection.find_one({"_id": id})
+    collection.update_one({"_id": id}, {"$set": {"status": "processing"}})
+    pooling_data = {"attribute": response["attribute"], "audio_path": response["audio_path"]}
+    return pooling_data
