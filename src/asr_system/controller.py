@@ -14,7 +14,9 @@ load_dotenv()
 
 class Controller:
     def __init__(self) -> None:
-        self.asr_inference = ASRInference()
+        self.asr_inference = ASRInference(
+            getenv("ASR_MODEL_CONFIG"), getenv("ASR_MODEL_PATH"), getenv("LM_MODEL_CONFIG"), getenv("LM_MODEL_PATH")
+        )
         # self.format_text = FormatText()
         # self.split_audio = SplitAudio()
         self.text_handler = TextHandler()

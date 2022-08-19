@@ -9,7 +9,7 @@ load_dotenv()
 
 
 class TextHandler:
-    def __init__(self, local_output_path) -> None:
+    def __init__(self) -> None:
 
         self.outline_clinet = OutlineClient()
         self.local_output_path = getenv("TEXT_OUTPUT")
