@@ -21,7 +21,9 @@ def postQueueServer(post_id: ObjectId) -> None:
 
 
 def registData(attribute: str, audio_path: str) -> None:
-    client = MongoClient(os.getenv("MONGO_DB_IP"), int(os.getenv("MONGO_DB_PORT")))  # TODO: get client info from dotenv
+    client = MongoClient(
+        os.getenv("STREAMLIT_DB_IP"), int(os.getenv("MONGO_DB_PORT"))
+    )
     db = client[os.getenv("MONGO_DB_NAME")]
     collection = db[os.getenv("MONGO_COLLECTION_NAME")]
     post = {
