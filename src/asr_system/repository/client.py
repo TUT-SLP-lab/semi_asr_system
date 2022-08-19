@@ -1,11 +1,10 @@
 import requests
 import json
 from typing import Tuple, Dict
-from common.constant import (
-    OUTLINE_ADDRESS,
-    OUTLINE_ACCESS_TOKEN,
-    OUTLINE_PORT,
-)
+from os import getenv
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class DispacherClinent:
@@ -21,8 +20,8 @@ class DispacherClinent:
 
 class OutlineClient:
     def __init__(self) -> None:
-        self.access_token = OUTLINE_ACCESS_TOKEN
-        self.endpoint = f"http://{OUTLINE_ADDRESS}:{OUTLINE_PORT}/api"
+        self.access_token = getenv("OUTLINE_ACCESS_TOKEN")
+        self.endpoint = f"http://{getenv('OUTLINE_ADDRESS')}:{getenv('OUTLINE_PORT')}/api"
         self.headers = {
             "authorization": f"Bearer {self.access_token}",
             "content-type": "application/json",

@@ -1,12 +1,15 @@
 import espnet2
 import soundfile
 from espnet2.bin.asr_inference import Speech2Text
-from common.constant import ASR_MODEL_CONFIG, ASR_MODEL_PATH
+from os import getenv
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class ASRInference:
     def __init__(self):
-        self.s2t = Speech2Text(ASR_MODEL_CONFIG, ASR_MODEL_PATH)
+        self.s2t = Speech2Text(getenv("ASR_MODEL_CONFIG"), getenv("ASR_MODEL_PATH"))
 
     def speech2text(self, audio_path: list):
         hyp = []
