@@ -34,7 +34,7 @@ class Controller:
         """
         self.is_running = True
         split_wav_dir = getenv("SPLIT_WAV")
-        os.mkdir(split_wav_dir)
+        os.makedirs(split_wav_dir, exist_ok=True)
         try:
             # step1 split audio
             print("Step1 split audio")
@@ -62,5 +62,5 @@ class Controller:
         except Exception as e:
             print(f"error occored {e}")
         finally:
-            # FileIO.delete_all_file(split_wav_dir)
+            FileIO.delete_all_file(split_wav_dir)
             self.is_running = False
