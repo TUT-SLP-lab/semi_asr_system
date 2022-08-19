@@ -10,6 +10,11 @@ services:
             - NVIDIA_VISIBLE_DEVICES=all
         ports:
             - "5000:5000"
-        command: "python run_asr_server.py"
+        command: "python src/run_asr_server.py"
+        # tty: true
         volumes:
-            - ./src:/app
+            - ./src:/app/src
+            - ./test:/app/test
+            - ./docker/data/split_wav:/media/split_wav
+            - ./docker/data/text:/mnt/text
+            - ./docker/data/models:/mnt/models

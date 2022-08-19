@@ -18,7 +18,7 @@ job = Controller()
 async def asr_inference(audio: Audio, background_task: BackgroundTasks):
 
     if job.is_running is False:
-        background_task.add_task(job.speech2text)
+        background_task.add_task(job.speech2text, audio.attribute, audio.audio_path)
 
         return {
             "attribute": audio.attribute,
