@@ -46,7 +46,7 @@ class Controller:
         # step4 wirte and send
         wav_basename = os.path.basename(wav_path)
         self.text_handler.write_text(hyp_list, f"{wav_basename}.txt")
-        self.text_handler.send_text_outline(attribute, hyp_list, getenv("COLLECTION_NAME"))
+        self.text_handler.send_text_outline(attribute, hyp_list, getenv("OUTLINE_COLLECTION_NAME"))
 
         # TODO Split 音声を削除
 
