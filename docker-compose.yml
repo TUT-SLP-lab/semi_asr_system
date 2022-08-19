@@ -1,53 +1,71 @@
 version: "3"
 services:
-    # asr_system:
-    #     build:
-    #         context: .
-    #         dockerfile: docker/asr_system/Dockerfile
-    #     image: kinouchi1000/espnet_asr_server
-    #     runtime: nvidia
-    #     environment:
-    #         - NVIDIA_VISIBLE_DEVICES=all
-    #     ports:
-    #         - "5000:5000"
-    #     command: "python run_asr_server.py"
-    #     volumes:
-    #         - ./src:/app
+    asr_system:
+        build:
+            context: .
+            dockerfile: docker/asr_system/Dockerfile
+        image: kinouchi1000/espnet_asr_server
+        runtime: nvidia
+        environment:
+            - NVIDIA_VISIBLE_DEVICES=all
+            - ASR_MODEL_PATH
+            - ASR_MODEL_CONFIG
+            - LM_MODEL_PATH
+            - LM_MODEL_CONFIG
+            - ASR_SYSTEM_PORT
+            - ASR_SYSTEM_IP
+            - OUTLINE_ACCESS_TOKEN
+            - OUTLINE_ADDRESS
+            - OUTLINE_PORT
+            - OUTLINE_COLLECTION_NAME
+            - WAV_DIR
+            - SPLIT_WAV
+            - TEXT_OUTPUT
+            - AUDIO_OUTPUT_DIR
+        ports:
+            - "5000:5000"
+        command: "python src/run_asr_server.py"
+        volumes:
+            - ./src:/app/src
+            - ./test:/app/test
+            - ./docker/data/text:/media/text
+            - ./docker/data/models:/media/models
+            - ./docker/data/wav_data:/media/wav_data
+            
+    mongo:
+        image: mongo
+        restart: always
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
+          MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
+        ports:
+          - ${MONGO_DB_PORT}:${MONGO_DB_PORT}
+        volumes:
+          - ./db:/data/db
+          - ./configdb:/data/configdb
 
-  mongo:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
-    ports:
-      - ${MONGO_DB_PORT}:${MONGO_DB_PORT}
-    volumes:
-      - ./db:/data/db
-      - ./configdb:/data/configdb
+    mongo-express:
+      image: mongo-express
+      restart: always
+      ports:
+        - 8081:8081
+      environment:
+        ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_DB_USERNAME}
+        ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_DB_PASSWORD}
+        ME_CONFIG_MONGODB_SERVER: ${MONGO_DB_SERVER}
+      depends_on:
+        - mongo
 
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_DB_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_DB_PASSWORD}
-      ME_CONFIG_MONGODB_SERVER: ${MONGO_DB_SERVER}
-    depends_on:
-      - mongo
-  
-  dispatcher:
-    container_name: dispatcher
-    build:
-      context: .
-      dockerfile: docker/dispatcher/Dockerfile
-    ports:
-      - ${DISPATCHER_PORT}:${DISPATCHER_PORT}
-    environment:
-      - MONGO_DB_SERVER
-      - MONGO_DB_PORT
-    command: "python3 dispatcher.py"
-    volumes:
-      - ./src/dispatcher:/app
+    dispatcher:
+      container_name: dispatcher
+      build:
+        context: .
+        dockerfile: docker/dispatcher/Dockerfile
+      ports:
+        - ${DISPATCHER_PORT}:${DISPATCHER_PORT}
+      environment:
+        - MONGO_DB_SERVER
+        - MONGO_DB_PORT
+      command: "python3 dispatcher.py"
+      volumes:
+        - ./src/dispatcher:/app
