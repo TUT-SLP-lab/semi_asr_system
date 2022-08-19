@@ -6,3 +6,4 @@ class Audio(BaseModel):
     audio_path: str
     text_path: str
     status: str
+

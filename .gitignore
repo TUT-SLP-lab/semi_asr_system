@@ -155,3 +155,4 @@ test/test_data
 test/asr_inference/data
 
 docker/data
+db

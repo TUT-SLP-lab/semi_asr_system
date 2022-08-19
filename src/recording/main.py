@@ -29,6 +29,7 @@ def registData(attribute: str, audio_path: str) -> None:
         "audio_path": audio_path,
         "text_path": "",
         "status": "unprocessed",
+        "add_date": "",
     }
     post_id = collection.insert_one(post).inserted_id
     postQueueServer(post_id)
