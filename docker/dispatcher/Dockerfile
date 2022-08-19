@@ -23,3 +23,10 @@ RUN pip install -U pip setuptools \
 
 WORKDIR /app/
 
+# cronをインストール
+RUN sudo apt install cron -y
+
+# 実行したいcronファイルの配置
+COPY mydns.cron /etc/cron.d
+
+CMD crond -n
