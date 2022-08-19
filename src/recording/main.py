@@ -43,7 +43,7 @@ class Recorder:
         os.makedirs(self.output_dir, exist_ok=True)
         print(self.cmd)
 
-    def start(self, presenter: str):
+    def start(self, presenter: str) -> None:
         if self.record is None:
             self.presenter = presenter
             self.attribute = f"{datetime.date.today()}_{presenter}"
@@ -59,6 +59,10 @@ class Recorder:
             (_, stderr) = self.record.communicate()
             if stderr:
                 print(stderr)
+            # self.recordの中身を削除
+            del self.record
+            self.record = None
+
             # recording.sh内でtmp.wavに音声を書き込んでいるので、
             # 正式な形にrenameする必要がある
             shutil.move(os.path.join(self.tmpdir, "tmp.wav"), self.output_file_path)
@@ -96,7 +100,9 @@ class ThreadManager:
 def main():
     st.thread_manager = ThreadManager()
 
-    text_presenter = st.text_input("Presenter", key="presenter", disabled=st.thread_manager.is_running())
+    text_presenter = st.text_input(
+        "Presenter", st.session_state["presenter"], key="presenter", disabled=st.thread_manager.is_running()
+    )
 
     # 録音を制御する部分
     if st.button("Start Recording", disabled=st.thread_manager.is_running()):
@@ -115,7 +121,7 @@ def main():
         presenter = st.session_state["presenter"]
         st.markdown(f"Presenter: {presenter}")
         placeholder = st.empty()
-        if recorder.is_alive():
+        if recorder is not None:
             placeholder.markdown("Recording")
 
     # 別セッションでの更新に追従するために、定期的にrerunする
