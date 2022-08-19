@@ -21,3 +21,6 @@ TEXT_OUTPUT = "/mnt/text"
 
 ASR_MODEL_PATH = "/mnt/models/exp/asr_train_asr_transformer_raw_jp_char_sp/valid.acc.ave_10best.pth"
 ASR_MODEL_CONFIG = "/mnt/models/exp/asr_train_asr_transformer_raw_jp_char_sp/config.yaml"
+
+LM_MODEL_PATH = "/mnt/models/exp/lm_train_lm_jp_char/40epoch.pth"
+LM_MODEL_CONFIG = "/mnt/models/exp/lm_train_lm_jp_char/config.yaml"

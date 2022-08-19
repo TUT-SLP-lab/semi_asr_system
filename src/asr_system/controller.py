@@ -5,13 +5,14 @@ from asr_system.service.text_handler import TextHandler
 # from asr_system.service.split_audio import SplitAudio
 
 import os
+from common.constant import ASR_MODEL_CONFIG, ASR_MODEL_PATH, LM_MODEL_CONFIG, LM_MODEL_PATH
 from common.constant import TEXT_OUTPUT, SPLIT_WAV, COLLECTION_NAME
 from asr_system.repository.file_io import FileIO
 
 
 class Controller:
     def __init__(self) -> None:
-        self.asr_inference = ASRInference()
+        self.asr_inference = ASRInference(ASR_MODEL_CONFIG, ASR_MODEL_PATH, LM_MODEL_CONFIG, LM_MODEL_PATH)
         # self.format_text = FormatText()
         # self.split_audio = SplitAudio()
         self.text_handler = TextHandler()
