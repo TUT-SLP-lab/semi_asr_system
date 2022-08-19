@@ -79,6 +79,15 @@ class Recorder:
 @dataclasses.dataclass
 class ThreadManager:
     recorder = None
+    presenter = None
+
+    def set_presenter(self, presenter: str) -> None:
+        self.presenter = presenter
+
+    def get_presenter(self) -> str:
+        if self.presenter is None:
+            return ""
+        return self.presenter
 
     def get_recorder(self) -> object:
         return self.recorder
@@ -86,10 +95,10 @@ class ThreadManager:
     def is_running(self) -> bool:
         return self.recorder is not None
 
-    def start_recording(self, presenter: str) -> object:
+    def start_recording(self) -> object:
         if self.recorder is None:
             self.recorder = Recorder()
-            self.recorder.start(presenter)
+            self.recorder.start(self.presenter)
         return self.recorder
 
     def stop_recording(self) -> None:
@@ -101,14 +110,18 @@ class ThreadManager:
 def main():
     st.thread_manager = ThreadManager()
 
-    text_presenter = st.text_input(
-        "Presenter", st.session_state["presenter"], key="presenter", disabled=st.thread_manager.is_running()
-    )
+    if st.thread_manager.get_presenter() != "":
+        st.text_input(
+            "Presenter", st.thread_manager.get_presenter(), key="presenter", disabled=st.thread_manager.is_running()
+        )
+    else:
+        st.text_input("Presenter", key="presenter", disabled=st.thread_manager.is_running())
 
     # 録音を制御する部分
     if st.button("Start Recording", disabled=st.thread_manager.is_running()):
         presenter = st.session_state["presenter"]
-        recorder = st.thread_manager.start_recording(presenter=presenter)
+        st.thread_manager.set_presenter(presenter)
+        recorder = st.thread_manager.start_recording()
         st.experimental_rerun()
 
     if st.button("Stop Recording", disabled=not st.thread_manager.is_running()):
