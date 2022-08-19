@@ -16,7 +16,7 @@ load_dotenv()
 def postQueueServer(post_id: ObjectId) -> None:
     # TODO: get server ip from dotenv
     url = f'http://{os.getenv("DISPATCHER_IP")}:{int(os.getenv("DISPATCHER_PORT"))}/api/id'
-    payload = {"_id": str(post_id)}
+    payload = {"id": str(post_id)}
     requests.post(url, json=payload)
 
 
@@ -51,11 +51,14 @@ class Recorder:
             self.output_file_path = os.path.join(self.output_dir, f"{self.attribute}.wav")
 
             # subprocessで録音処理を実行
-            self.record = subprocess.Popen(f"exec {self.cmd}", shell=True)
+            self.record = subprocess.Popen(f"exec {self.cmd}", stderr=subprocess.PIPE, shell=True)
 
     def stop(self) -> None:
         if self.record is not None:
             self.record.kill()  # 録音を停止
+            (_, stderr) = self.record.communicate()
+            if stderr:
+                print(stderr)
             # recording.sh内でtmp.wavに音声を書き込んでいるので、
             # 正式な形にrenameする必要がある
             shutil.move(os.path.join(self.tmpdir, "tmp.wav"), self.output_file_path)
