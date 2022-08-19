@@ -12,11 +12,12 @@ DB_PORT = os.getenv("MONGO_DB_PORT")
 DB_USERNAME = os.getenv("MONGO_DB_USERNAME")
 DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
 
-client = pymongo.MongoClient(DB_PLACE, int(DB_PORT), username = DB_USERNAME, password = DB_PASSWORD)
+client = pymongo.MongoClient(DB_PLACE, int(DB_PORT), username=DB_USERNAME, password=DB_PASSWORD)
 
 db = client["asr_queue"]
 collection = db["queue"]
-baseurl = "http://172.0.0.1:6000/api/asr_system"   #ASRシステムへの送り先（未定）
+baseurl = "http://172.0.0.1:6000/api/asr_system"  # ASRシステムへの送り先（未定）
+
 
 # text_pathとstatusを更新する
 def updateTextFilePath(path):
@@ -44,10 +45,11 @@ def updateTextFilePath(path):
             _id = ObjectId(check_unprocessed_queue["_id"])
             data = postAudioData(_id)
             return data
-        
+
+
 # _idからデータを取得してASRシステムに送る
-def postAudioData(_id):
-    id = ObjectId(_id)
+def postAudioData(id):
+    id = ObjectId(id)
     response = collection.find_one({"_id": id})
     if not response:
         return "This id is None"
@@ -59,15 +61,17 @@ def postAudioData(_id):
     # requests.post(baseurl, json=pooling_data)
     return "pooling"
 
+
 # 録音しているところから_idを受け取る
-def postRecordData(json_id):
+def postRecordData(id):
     # id = ObjectId(_id)
     check_process_status = collection.find_one({"status": "processing"})
     if check_process_status:
         return "processing now"
     else:
-        data = postAudioData(json_id.id)
+        data = postAudioData(id)
         return data
+
 
 # 定期実行されるべきもの
 def DeleteAndSurveillance():
@@ -80,14 +84,14 @@ def DeleteAndSurveillance():
             # requests.post(baseurl, json=pooling_data)
             collection.update_one({"_id": processing_data["_id"]}, {"$set": {"add_time": datetime.datetime.now()}})
             print("processing ok")
-    
+
     completed_data = collection.find_one({"status": "completed"})
     if completed_data:
-        if abs(completed_data["add_time"]  - datetime.datetime.now()).days >= 14:
+        if abs(completed_data["add_time"] - datetime.datetime.now()).days >= 14:
             # 2週間以上経ったものを削除
             """本番では有効"""
             # os.remove(completed_data["audio_path"] + completed_data["attribute"] +".wav") #あってるのか確認
-            collection.delete_one({"_id":completed_data["_id"]})
+            collection.delete_one({"_id": completed_data["_id"]})
             print("delete ok")
 
     if not processing_data:
@@ -97,4 +101,3 @@ def DeleteAndSurveillance():
             id = unprocessed_data["_id"]
             postAudioData(id)
             print("process start")
-    
