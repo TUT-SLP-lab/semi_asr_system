@@ -25,3 +25,11 @@ async def asr_inference(audio: Audio, background_task: BackgroundTasks):
             "audio_path": audio.audio_path,
         }
     return {"message": "job is running"}
+
+
+@app.get("/api/isrun")
+def asr_inference():
+    if job.is_running:
+        return {"message": "job is running"}
+    else:
+        return {"message": "job is not running"}

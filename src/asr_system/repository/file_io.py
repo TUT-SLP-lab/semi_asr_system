@@ -1,5 +1,7 @@
 from typing import List
 import glob
+import os
+import shutil
 
 
 class FileIO:
@@ -36,3 +38,11 @@ class FileIO:
         h = "\n".join(text_list)
         with open(fpath, mode="w") as f:
             f.write(h)
+
+    @staticmethod
+    def delete_all_file(target_dir: str):
+        """
+        target directoryの中のファイルすべてを削除
+        """
+        shutil.rmtree(target_dir)
+        os.mkdir(target_dir)
