@@ -34,6 +34,7 @@ class Controller:
         """
         self.is_running = True
         split_wav_dir = getenv("SPLIT_WAV")
+        os.mkdir(split_wav_dir)
         try:
             # step1 split audio
             print("Step1 split audio")

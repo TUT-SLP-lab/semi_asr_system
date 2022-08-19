@@ -1,6 +1,7 @@
 from typing import List
 import glob
 import os
+import shutil
 
 
 class FileIO:
@@ -43,5 +44,5 @@ class FileIO:
         """
         target directoryの中のファイルすべてを削除
         """
-        for path in glob.glob(f"{target_dir}/*"):
-            os.remove(path)
+        shutil.rmtree(target_dir)
+        os.mkdir(target_dir)
