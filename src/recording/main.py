@@ -46,7 +46,8 @@ class Recorder:
     def start(self, presenter: str) -> None:
         if self.record is None:
             self.presenter = presenter
-            self.attribute = f"{datetime.date.today()}_{presenter}"
+            dt_now = str(datetime.datetime.now()).replace(" ", "T").split(".")[0]
+            self.attribute = f"{dt_now}_{presenter}"
             self.tmp_file_path = os.path.join(self.tmpdir, f"{self.attribute}.wav")
             self.output_file_path = os.path.join(self.output_dir, f"{self.attribute}.wav")
 
