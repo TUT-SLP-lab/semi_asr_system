@@ -33,6 +33,7 @@ services:
             - ./docker/data/text:/media/text
             - ./docker/data/models:/media/models
             - ./docker/data/wav_data:/media/wav_data
+            - ./docker/data/split_wav:/media/split_wav
             
     mongo:
         image: mongo

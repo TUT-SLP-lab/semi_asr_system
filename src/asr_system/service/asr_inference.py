@@ -23,6 +23,7 @@ class ASRInference:
             # 長さ0の場合は無視
             if len(audio) == 0:
                 break
+            print(f"audio dim{audio.ndim}")
             # 16000kHzに変換
             audio = resampy.resample(audio, rate, 16000)
             print(f"processing:{i}/{len(audio_path)} sound length :{len(audio)}")

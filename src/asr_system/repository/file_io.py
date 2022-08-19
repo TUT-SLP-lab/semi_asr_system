@@ -44,5 +44,5 @@ class FileIO:
         """
         target directoryの中のファイルすべてを削除
         """
-        shutil.rmtree(target_dir)
-        os.mkdir(target_dir)
+        for path in glob.glob(f"{os.getenv('SPLIT_WAV')}/*.wav"):
+            os.remove(path)

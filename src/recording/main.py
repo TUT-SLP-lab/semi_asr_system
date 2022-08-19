@@ -1,3 +1,4 @@
+from re import T
 import streamlit as st
 import subprocess
 import dataclasses
@@ -52,7 +53,8 @@ class Recorder:
     def start(self, presenter: str):
         if self.record is None:
             self.presenter = presenter
-            self.attribute = f"{datetime.date.today()}_{presenter}"
+            dt_now = str(datetime.datetime.now()).replace(" ", "T").split(".")[0]
+            self.attribute = f"{dt_now}_{presenter}"
             self.tmp_file_path = os.path.join(self.tmpdir, f"{self.attribute}.wav")
             self.output_file_path = os.path.join(self.output_dir, f"{self.attribute}.wav")
 
@@ -67,7 +69,11 @@ class Recorder:
                 print(stderr)
             # recording.sh内でtmp.wavに音声を書き込んでいるので、
             # 正式な形にrenameする必要がある
-            shutil.move(os.path.join(self.tmpdir, "tmp.wav"), self.output_file_path)
+            tmp_path = os.path.join(self.tmpdir, "tmp.wav")
+            subprocess.run(
+                f"ffmpeg -y -i '{tmp_path}' -vn -ac 2 -ar 44100 -acodec pcm_s16le -f wav '{tmp_path}_'", shell=True
+            )
+            shutil.move(tmp_path + "_", self.output_file_path)
             # DBに登録
             registData(attribute=self.attribute, audio_path=self.tmp_file_path)
 
