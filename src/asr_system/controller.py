@@ -38,7 +38,8 @@ class Controller:
             # step1 split audio
             print("Step1 split audio")
 
-            split_wav_list = self.split_audio.split(wav_path, split_wav_dir)
+            self.split_audio.split(wav_path, split_wav_dir)
+            split_wav_list = FileIO.get_all_filepath(split_wav_dir, "*.wav")
             split_wav_list.sort()
             print(f"wavlit {split_wav_list}")
             # step2 asr inference
