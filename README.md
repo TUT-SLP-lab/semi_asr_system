@@ -7,28 +7,73 @@
 
 # asr system
 
-## fast api の立ち上げ方法
+## LocalでASR serverを立ち上げる方法
 
-0. Local で API を立ち上げる場合(Option, 1~2 を skip)
+    ```python
+        # IP Addressの修正
+        ASR_SYSTEM_IP = "0.0.0.0"
+        ↓
+        ASR_SYSTEM_IP = "127.0.0.1"
+    ```
+
+    ```bash
+    # サーバの立ち上げ
+    python src/run_asr_server
+
+    # APIを叩く
+    python test/asr_system/unit_test.py
+    ```
+
+## docker container でfast api の立ち上げ方法
+
+0. データの準備
+    
+    `docker/data/`以下にデータを準備します。
+    - models: expファイルを入れる（木内からもらってください。）
+    
+    - split_wav: 分割された音声を入れる　（木内からもらう）
+
+    - text: なにもしない。
+
+    e.g
+    ```
+    data
+        models
+            exp
+                asr_stats
+                asr_train
+                lm_stats
+                lm_train
+        split_wav
+            **.wav
+            **.wav
+        text
 
     ```
-    python src/run_asr_server.py
+
+1. (1)Imageの取得
+
+    ```bash
+    docker login 
+    docker pull kinouchi1000/espnet_asr_server
     ```
 
-1. image のビルド（めっちゃ時間かかるかも）
+2. (2)Image のビルド
 
-    ```
+    1の Imageの取得ができていればやる必要がありません。（めっちゃ時間かかる）
+
+    ```bash
     docker compose build asr_system
 
     ```
 
-2. コンテナ立ち上げ
+3. コンテナ立ち上げ
 
     ```
     docker compose up -d asr_system
     ```
 
-3. API を試しに叩く
+4. API を試しに叩く
 
     ```
     python test/asr_system/unit_test.py
