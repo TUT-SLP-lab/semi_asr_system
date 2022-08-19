@@ -26,6 +26,31 @@
 
 ## docker container でfast api の立ち上げ方法
 
+0. データの準備
+    
+    `docker/data/`以下にデータを準備します。
+    - models: expファイルを入れる（木内からもらってください。）
+    
+    - split_wav: 分割された音声を入れる　（木内からもらう）
+
+    - text: なにもしない。
+
+    e.g
+    ```
+    data
+        models
+            exp
+                asr_stats
+                asr_train
+                lm_stats
+                lm_train
+        split_wav
+            **.wav
+            **.wav
+        text
+
+    ```
+
 1. (1)Imageの取得
 
     ```bash
