@@ -3,26 +3,42 @@
 # requirement
 
 -   docker
--   docker compose
+-   docker compose (1.29.2)
+-   nvidia-docker2 
+
+## install docker-compose (1.29.2)
+```bash
+sudo curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+## install nvidia-docker2
+```bash
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
+sudo apt-get install nvidia-docker2
+sudo pkill -SIGHUP dockerd
+```
 
 # asr system
 
 ## LocalでASR serverを立ち上げる方法
 
-    ```python
-        # IP Addressの修正
-        ASR_SYSTEM_IP = "0.0.0.0"
-        ↓
-        ASR_SYSTEM_IP = "127.0.0.1"
-    ```
+```python
+# IP Addressの修正
+ASR_SYSTEM_IP = "0.0.0.0"
+↓
+ASR_SYSTEM_IP = "127.0.0.1"
+```
 
-    ```bash
-    # サーバの立ち上げ
-    python src/run_asr_server
+```bash
+# サーバの立ち上げ
+python src/run_asr_server
 
-    # APIを叩く
-    python test/asr_system/unit_test.py
-    ```
+# APIを叩く
+python test/asr_system/unit_test.py
+```
 
 ## docker container でfast api の立ち上げ方法
 
