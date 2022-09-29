@@ -23,11 +23,9 @@ class Controller:
     def speech2text(self, attribute: str, wav_path: str) -> None:
         """
         Speech to textの機能をすべて包括する関数
-
         Args:
             attribute(str): 属性名
             wav_path(str): .wav ファイルのパス
-
         Return:
             None
         """
@@ -44,14 +42,7 @@ class Controller:
             print(f"wavlit {split_wav_list}")
             # step2 asr inference
             print("Step2 asr inference")
-            hyp_list = []
-            for i, wav in split_wav_list:
-                hyp = self.asr_inference.speech2text(wav)
-                print(f"processing:{i}/{len(split_wav_list)} sound length :{len(wav)}")
-                if len(audio) == 0:
-                    break
-                hyp_list.append(hyp)
-                self.text_handler.send_text_outline(attribute, hyp, getenv("OUTLINE_COLLECTION_NAME"))
+            hyp_list = self.asr_inference.speech2text(split_wav_list)
 
             # 分割済み音声を削除
 
@@ -60,8 +51,10 @@ class Controller:
 
             # step4 wirte and send
             print("Step4 write and send")
+
             wav_basename = os.path.basename(wav_path)
             self.text_handler.write_text(hyp_list, f"{wav_basename}.txt")
+            self.text_handler.send_text_outline(attribute, hyp_list, getenv("OUTLINE_COLLECTION_NAME"))
 
         except Exception as e:
             print(f"error occored {e}")
