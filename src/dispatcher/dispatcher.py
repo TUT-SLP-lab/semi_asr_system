@@ -21,6 +21,7 @@ class Path(BaseModel):
 
 @app.put("/api/update")
 def updateTextFilePath(path: Path):
+    print("update text file path is called")
     data = db.updateTextFilePath(path)
     return {"updated": True, "updated_count": data}
 
@@ -33,12 +34,14 @@ def updateTextFilePath(path: Path):
 
 @app.post("/api/id")
 def postRecordData(item: Item):
+    print("postRecordData is called")
     data = db.postRecordData(item.id)
     return data
 
 
 @app.delete("/api/delete")
 def ScheduledExecution():
+    print("Scheduled Execution is called")
     db.DeleteAndSurveillance()
 
 

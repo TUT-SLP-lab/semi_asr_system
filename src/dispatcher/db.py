@@ -19,9 +19,9 @@ ASR_SYSTEM_PORT = os.getenv("ASR_SYSTEM_PORT")
 
 client = pymongo.MongoClient(DB_PLACE, int(DB_PORT), username=DB_USERNAME, password=DB_PASSWORD)
 
-db = client[MONGO_DB_NAME]
-collection = db[MONGO_COLLECTION_NAME]
-baseurl = f"http://{ASR_SYSTEM_IP}:{int(ASR_SYSTEM_PORT)}/api/asr_system"  # ASRシステムへの送り先（未定）
+db = client[os.getenv("MONGO_DB_NAME")]
+collection = db[os.getenv("MONGO_COLLECTION_NAME")]
+baseurl = f"http://{os.getenv('ASR_SYSTEM_IP')}:{os.getenv('ASR_SYSTEM_PORT')}/api/asr_system"  # ASRシステムへの送り先（未定）
 
 
 # text_pathとstatusを更新する
@@ -62,8 +62,8 @@ def postAudioData(id):
         return "This id is completed"
     collection.update_one({"_id": id}, {"$set": {"status": "processing", "add_time": datetime.datetime.now()}})
     pooling_data = {"attribute": response["attribute"], "audio_path": response["audio_path"]}
-    """本番では有効"""
-    # requests.post(baseurl, json=pooling_data)
+    result = requests.post(baseurl, json=pooling_data)
+    print(f"asr system responce: {result.json()}")
     return "pooling"
 
 
@@ -85,8 +85,8 @@ def DeleteAndSurveillance():
         if abs(processing_data["add_time"] - datetime.datetime.now()).days >= 1:
             # 1日以上processingがあったら送り直し
             pooling_data = {"attribute": processing_data["attribute"], "audio_path": processing_data["audio_path"]}
-            """本番では有効"""
-            # requests.post(baseurl, json=pooling_data)
+            result = requests.post(baseurl, json=pooling_data)
+            print(result.json())
             collection.update_one({"_id": processing_data["_id"]}, {"$set": {"add_time": datetime.datetime.now()}})
             print("processing ok")
 
@@ -94,8 +94,7 @@ def DeleteAndSurveillance():
     if completed_data:
         if abs(completed_data["add_time"] - datetime.datetime.now()).days >= 14:
             # 2週間以上経ったものを削除
-            """本番では有効"""
-            # os.remove(completed_data["audio_path"] + completed_data["attribute"] +".wav") #あってるのか確認
+            os.remove(completed_data["audio_path"] + completed_data["attribute"] +".wav") #あってるのか確認
             collection.delete_one({"_id": completed_data["_id"]})
             print("delete ok")
 
