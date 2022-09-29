@@ -1,0 +1,1 @@
+00 * * * * curl -X DELETE "http://${DISPATCHER_IP}:${DISPATCHER_PORT}/api/delete"

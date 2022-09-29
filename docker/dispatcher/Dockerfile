@@ -23,3 +23,11 @@ RUN pip install -U pip setuptools \
 
 WORKDIR /app/
 
+# cronをインストール
+RUN apt install cron -y
+
+# 実行したいcronファイルの配置
+# COPY mydns.cron /etc/cron.d
+RUN echo "00 * * * * curl -X DELETE 'http://${DISPATCHER_IP}:${DISPATCHER_PORT}/api/delete'" > /etc/cron.d/delete_requests.cron
+
+CMD crond -n
