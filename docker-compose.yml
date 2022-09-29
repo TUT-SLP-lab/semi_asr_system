@@ -1,36 +1,39 @@
 version: "3"
 services:
-    # asr_system:
-    #     build:
-    #         context: .
-    #         dockerfile: docker/asr_system/Dockerfile
-    #     image: kinouchi1000/espnet_asr_server
-    #     runtime: nvidia
-    #     environment:
-    #         - NVIDIA_VISIBLE_DEVICES=all
-    #         - ASR_MODEL_PATH
-    #         - ASR_MODEL_CONFIG
-    #         - LM_MODEL_PATH
-    #         - LM_MODEL_CONFIG
-    #         - ASR_SYSTEM_PORT
-    #         - ASR_SYSTEM_IP
-    #         - OUTLINE_ACCESS_TOKEN
-    #         - OUTLINE_ADDRESS
-    #         - OUTLINE_PORT
-    #         - OUTLINE_COLLECTION_NAME
-    #         - WAV_DIR
-    #         - SPLIT_WAV
-    #         - TEXT_OUTPUT
-    #         - AUDIO_OUTPUT_DIR
-    #     ports:
-    #         - "5000:5000"
-    #     command: "python src/run_asr_server.py"
-    #     volumes:
-    #         - ./src:/app/src
-    #         - ./test:/app/test
-    #         - ./docker/data/text:/media/text
-    #         - ./docker/data/models:/media/models
-    #         - ./docker/data/wav_data:/media/wav_data
+    asr_system:
+        build:
+            context: .
+            dockerfile: docker/asr_system/Dockerfile
+        image: kinouchi1000/espnet_asr_server
+        runtime: nvidia
+        environment:
+            - NVIDIA_VISIBLE_DEVICES=all
+            - ASR_MODEL_PATH
+            - ASR_MODEL_CONFIG
+            - LM_MODEL_PATH
+            - LM_MODEL_CONFIG
+            - ASR_SYSTEM_PORT
+            - ASR_SYSTEM_IP
+            - OUTLINE_ACCESS_TOKEN
+            - OUTLINE_ADDRESS
+            - OUTLINE_PORT
+            - OUTLINE_COLLECTION_NAME
+            - WAV_DIR
+            - SPLIT_WAV
+            - TEXT_OUTPUT
+            - AUDIO_OUTPUT_DIR
+            - DISPATCHER_IP=dispatcher
+            - DISPATCHER_PORT
+        ports:
+            - "5000:5000"
+        command: "python src/run_asr_server.py"
+        volumes:
+            - ./src:/app/src
+            - ./test:/app/test
+            - ./docker/data/text:/media/text
+            - ./docker/data/models:/media/models
+            - ./docker/data/wav_data:/media/wav_data
+            - ./docker/data/split_wav:/media/split_wav
             
     mongo:
         image: mongo
@@ -71,8 +74,8 @@ services:
         - MONGO_DB_NAME
         - MONGO_COLLECTION_NAME
         - RECORDER_PORT
-        - DISPATCHER_IP
-        - DISPATCHER_PORT
+        - ASR_SYSTEM_IP
+        - ASR_SYSTEM_PORT
 
       command: "python3 dispatcher.py"
       volumes:

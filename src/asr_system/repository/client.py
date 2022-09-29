@@ -9,13 +9,25 @@ load_dotenv()
 
 class DispacherClinent:
     def __init__(self) -> None:
-        pass
+        self.access_token = getenv("OUTLINE_ACCESS_TOKEN")
+        self.endpoint = f"http://{getenv('DISPATCHER_IP')}:{getenv('DISPATCHER_PORT')}/api"
+        self.headers = {
+            "content-type": "application/json",
+            "accept": "application/json",
+        }
 
-    def nofity_finish(self):
-        pass
+    def nofity_finish_send_text(self, text_path: str) -> Tuple[int, Dict]:
+        payload = {
+            "text_path": text_path,
+        }
 
-    def send_ASR_text():
-        pass
+        result = requests.put(
+            f"{self.endpoint}/update",
+            headers=self.headers,
+            data=json.dumps(payload),
+        )
+
+        return result.status_code, json.loads(result.content)
 
 
 class OutlineClient:

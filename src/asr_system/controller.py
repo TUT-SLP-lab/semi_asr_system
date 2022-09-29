@@ -2,7 +2,7 @@ from asr_system.service.asr_inference import ASRInference
 from asr_system.service.text_handler import TextHandler
 
 # from asr_system.service.format_text import FormatText
-from asr_system.service.split_audio import SplitAudio, Sox_Command
+from asr_system.service.split_audio import SplitAudio
 
 import os
 import shutil
@@ -16,8 +16,7 @@ class Controller:
             getenv("ASR_MODEL_CONFIG"), getenv("ASR_MODEL_PATH"), getenv("LM_MODEL_CONFIG"), getenv("LM_MODEL_PATH")
         )
         # self.format_text = FormatText()
-        sox_com = Sox_Command(in_format_op="-V3", out_format_op=None, silence_params=[1, 0.4, 0.2] * 2)
-        self.split_audio = SplitAudio(sox_com)
+        self.split_audio = SplitAudio(in_format_op="-V3", out_format_op=None, silence_params=[1, 0.4, 0.2] * 2)
         self.text_handler = TextHandler()
         self.is_running = False
 
@@ -39,7 +38,7 @@ class Controller:
             # step1 split audio
             print("Step1 split audio")
 
-            self.split_audio.split(wav_path, os.path.join(split_wav_dir, "output.wav"))
+            self.split_audio.split(wav_path, split_wav_dir)
             split_wav_list = FileIO.get_all_filepath(split_wav_dir, "*.wav")
             split_wav_list.sort()
             print(f"wavlit {split_wav_list}")
