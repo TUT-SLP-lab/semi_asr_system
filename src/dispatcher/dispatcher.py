@@ -2,8 +2,13 @@ from fastapi import FastAPI
 import db
 import uvicorn
 from pydantic import BaseModel
+import os
+from dotenv import load_dotenv
 
 app = FastAPI()
+load_dotenv()
+DISPATCHER_PORT = os.getenv("DISPATCHER_PORT")
+
 
 
 class Item(BaseModel):
@@ -40,4 +45,4 @@ def ScheduledExecution():
     db.DeleteAndSurveillance()
 
 
-uvicorn.run(app, host="0.0.0.0", port=5001)
+uvicorn.run(app, host="0.0.0.0", port=int(DISPATCHER_PORT))
