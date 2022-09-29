@@ -23,11 +23,9 @@ class Controller:
     def speech2text(self, attribute: str, wav_path: str) -> None:
         """
         Speech to textの機能をすべて包括する関数
-
         Args:
             attribute(str): 属性名
             wav_path(str): .wav ファイルのパス
-
         Return:
             None
         """

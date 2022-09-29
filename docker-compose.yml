@@ -30,11 +30,10 @@ services:
         volumes:
             - ./src:/app/src
             - ./test:/app/test
-            - ./docker/data/text:/media/text
-            - ./docker/data/models:/media/models
-            - ./docker/data/wav_data:/media/wav_data
-            - ./docker/data/split_wav:/media/split_wav
-
+            - ./docker/data/text:/mnt/text
+            - ./docker/data/models:/mnt/models
+            - ./docker/data/wav_data:/mnt/wav_data
+            - ./docker/data/split_wav:/mnt/split_wav
             
     mongo:
         image: mongo
@@ -77,9 +76,6 @@ services:
         - RECORDER_PORT
         - ASR_SYSTEM_IP
         - ASR_SYSTEM_PORT
-        - DISPATCHER_IP
-        - DISPATCHER_PORT
-
 
       command: "python3 dispatcher.py"
       volumes:
