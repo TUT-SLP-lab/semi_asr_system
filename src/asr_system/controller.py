@@ -45,7 +45,11 @@ class Controller:
             print(f"wavlit {split_wav_list}")
             # step2 asr inference
             print("Step2 asr inference")
-            hyp_list = self.asr_inference.speech2text(split_wav_list)
+            hyp_list = []
+            for i, wav in split_wav_list:
+                hyp = self.asr_inference.speech2text(wav)
+                hyp_list.append(hyp)
+                self.text_handler.send_text_outline(attribute, hyp, getenv("OUTLINE_COLLECTION_NAME"))
 
             # 分割済み音声を削除
 
@@ -54,10 +58,8 @@ class Controller:
 
             # step4 wirte and send
             print("Step4 write and send")
-
             wav_basename = os.path.basename(wav_path)
             self.text_handler.write_text(hyp_list, f"{wav_basename}.txt")
-            self.text_handler.send_text_outline(attribute, hyp_list, getenv("OUTLINE_COLLECTION_NAME"))
 
         except Exception as e:
             print(f"error occored {e}")

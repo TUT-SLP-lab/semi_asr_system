@@ -12,16 +12,13 @@ class ASRInference:
             lm_file=lm_file,
         )
 
-    def speech2text(self, audio_path: list):
-        hyp = []
-        for i, ad in enumerate(audio_path):
-            audio, rate = soundfile.read(ad)
-            print(f"processing:{i}/{len(audio_path)} sound length :{len(audio)}")
-            if len(audio) == 0:
-                break
-            result = self.s2t(audio)
-            hyp.append((result[0])[0])
-        return hyp
+    def speech2text(self, audio_path: str):
+        audio, rate = soundfile.read(audio_path)
+        #print(f"processing:{i}/{len(audio_path)} sound length :{len(audio)}")
+        #if len(audio) == 0:
+        #    break
+        result = self.s2t(audio)
+        return (result[0])[0]
 
     def output_file(self, hyp: list, fname: str):
         h = "\n".join(hyp)
