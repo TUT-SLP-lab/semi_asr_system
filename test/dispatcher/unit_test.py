@@ -1,20 +1,17 @@
 import requests
 import pprint
 import json
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
+from create_dummy_data import create_dummy_data
 
-baseurl = f"http://{os.getenv('DISPATCHER_IP')}:{os.getenv('DISPATCHER_PORT')}/api/"
+baseurl = "http://127.0.0.1:5001/api/"
 
-# json_data = {"id": "62ff681138a355785e453b8c"}
-# r_post = requests.post(baseurl + "id", json=json_data)
+id = create_dummy_data()
+print(id)
+json_data = {"id": id}
 
-json_data = {"text_path": "aaa"}
-r_post = requests.put(baseurl + "update", json=json_data)
+r_post = requests.post(baseurl + "id", json=json_data)
 
 
 print(json.dumps(json_data))
 print(r_post.status_code)
-print(r_post.json())

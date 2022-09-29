@@ -14,7 +14,7 @@ class Audio(BaseModel):
 job = Controller()
 
 
-@app.get("/api/inference")
+@app.post("/api/inference")
 async def asr_inference(audio: Audio, background_task: BackgroundTasks):
 
     if job.is_running is False:

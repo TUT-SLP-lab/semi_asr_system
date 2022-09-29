@@ -33,6 +33,8 @@ services:
             - ./docker/data/text:/media/text
             - ./docker/data/models:/media/models
             - ./docker/data/wav_data:/media/wav_data
+            - ./docker/data/split_wav:/media/split_wav
+
             
     mongo:
         image: mongo
@@ -77,6 +79,7 @@ services:
         - ASR_SYSTEM_PORT
         - DISPATCHER_IP
         - DISPATCHER_PORT
+
 
       command: "python3 dispatcher.py"
       volumes:
