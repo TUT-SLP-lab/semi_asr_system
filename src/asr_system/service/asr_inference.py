@@ -6,7 +6,6 @@ from espnet2.bin.asr_inference import Speech2Text
 
 class ASRInference:
     def __init__(self, asr_train_config: str, asr_model_file: str, lm_train_config: str, lm_file: str):
-        print(asr_model_file, lm_file, sep='\n')
         self.s2t = Speech2Text(
             asr_train_config=asr_train_config,
             asr_model_file=asr_model_file,
