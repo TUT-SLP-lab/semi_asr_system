@@ -42,4 +42,4 @@ def ScheduledExecution():
     db.DeleteAndSurveillance()
 
 
-uvicorn.run(app, host="0.0.0.0", port=DISPATCHER_PORT)
+uvicorn.run(app, host="0.0.0.0", port=int(DISPATCHER_PORT))
