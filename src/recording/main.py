@@ -27,6 +27,7 @@ def registData(attribute: str, audio_path: str) -> None:
     client = MongoClient(
         os.getenv("MONGO_DB_IP"), int(os.getenv("MONGO_DB_PORT")), username=DB_USERNAME, password=DB_PASSWORD
     )  # TODO: get client info from dotenv
+
     db = client[os.getenv("MONGO_DB_NAME")]
     collection = db[os.getenv("MONGO_COLLECTION_NAME")]
     alter_path = os.getenv("WAV_DIR")
@@ -50,7 +51,7 @@ class Recorder:
         os.makedirs(self.output_dir, exist_ok=True)
         print(self.cmd)
 
-    def start(self, presenter: str):
+    def start(self, presenter: str) -> None:
         if self.record is None:
             self.presenter = presenter
             dt_now = str(datetime.datetime.now()).replace(" ", "T").split(".")[0]
@@ -67,6 +68,10 @@ class Recorder:
             (_, stderr) = self.record.communicate()
             if stderr:
                 print(stderr)
+            # self.recordの中身を削除
+            del self.record
+            self.record = None
+
             # recording.sh内でtmp.wavに音声を書き込んでいるので、
             # 正式な形にrenameする必要がある
             tmp_path = os.path.join(self.tmpdir, "tmp.wav")
@@ -86,6 +91,15 @@ class Recorder:
 @dataclasses.dataclass
 class ThreadManager:
     recorder = None
+    presenter = None
+
+    def set_presenter(self, presenter: str) -> None:
+        self.presenter = presenter
+
+    def get_presenter(self) -> str:
+        if self.presenter is None:
+            return ""
+        return self.presenter
 
     def get_recorder(self) -> object:
         return self.recorder
@@ -93,10 +107,10 @@ class ThreadManager:
     def is_running(self) -> bool:
         return self.recorder is not None
 
-    def start_recording(self, presenter: str) -> object:
+    def start_recording(self) -> object:
         if self.recorder is None:
             self.recorder = Recorder()
-            self.recorder.start(presenter)
+            self.recorder.start(self.presenter)
         return self.recorder
 
     def stop_recording(self) -> None:
@@ -108,12 +122,18 @@ class ThreadManager:
 def main():
     st.thread_manager = ThreadManager()
 
-    text_presenter = st.text_input("Presenter", key="presenter", disabled=st.thread_manager.is_running())
+    if st.thread_manager.get_presenter() != "":
+        st.text_input(
+            "Presenter", st.thread_manager.get_presenter(), key="presenter", disabled=st.thread_manager.is_running()
+        )
+    else:
+        st.text_input("Presenter", key="presenter", disabled=st.thread_manager.is_running())
 
     # 録音を制御する部分
     if st.button("Start Recording", disabled=st.thread_manager.is_running()):
         presenter = st.session_state["presenter"]
-        recorder = st.thread_manager.start_recording(presenter=presenter)
+        st.thread_manager.set_presenter(presenter)
+        recorder = st.thread_manager.start_recording()
         st.experimental_rerun()
 
     if st.button("Stop Recording", disabled=not st.thread_manager.is_running()):
@@ -127,7 +147,7 @@ def main():
         presenter = st.session_state["presenter"]
         st.markdown(f"Presenter: {presenter}")
         placeholder = st.empty()
-        if recorder.is_alive():
+        if recorder is not None:
             placeholder.markdown("Recording")
 
     # 別セッションでの更新に追従するために、定期的にrerunする
