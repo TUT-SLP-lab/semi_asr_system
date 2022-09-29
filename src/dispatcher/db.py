@@ -11,12 +11,17 @@ DB_PLACE = os.getenv("MONGO_DB_SERVER")
 DB_PORT = os.getenv("MONGO_DB_PORT")
 DB_USERNAME = os.getenv("MONGO_DB_USERNAME")
 DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
+MONGO_DB_NAME = os.getenv("MONGO_DB_NAME")
+MONGO_COLLECTION_NAME = os.getenv("MONGO_COLLECTION_NAME")
+ASR_SYSTEM_IP = os.getenv("ASR_SYSTEM_IP")
+ASR_SYSTEM_PORT = os.getenv("ASR_SYSTEM_PORT")
+
 
 client = pymongo.MongoClient(DB_PLACE, int(DB_PORT), username=DB_USERNAME, password=DB_PASSWORD)
 
-db = client["asr_queue"]
-collection = db["queue"]
-baseurl = "http://172.0.0.1:6000/api/asr_system"  # ASRシステムへの送り先（未定）
+db = client[MONGO_DB_NAME]
+collection = db[MONGO_COLLECTION_NAME]
+baseurl = f"http://{ASR_SYSTEM_IP}:{int(ASR_SYSTEM_PORT)}/api/asr_system"  # ASRシステムへの送り先（未定）
 
 
 # text_pathとstatusを更新する
