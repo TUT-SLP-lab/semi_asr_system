@@ -1,3 +1,4 @@
+from re import T
 import streamlit as st
 import subprocess
 import dataclasses
@@ -15,20 +16,24 @@ load_dotenv()
 
 def postQueueServer(post_id: ObjectId) -> None:
     # TODO: get server ip from dotenv
-    url = f'http://{os.getenv("DISPATCHER_IP")}:{int(os.getenv("DISPATCHER_PORT"))}/api/id'
+    url = f'http://{os.getenv("STREAMLIT_DIPATCHER_IP")}:{int(os.getenv("DISPATCHER_PORT"))}/api/id'
     payload = {"id": str(post_id)}
     requests.post(url, json=payload)
 
 
 def registData(attribute: str, audio_path: str) -> None:
+    DB_USERNAME = os.getenv("MONGO_DB_USERNAME")
+    DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
     client = MongoClient(
-        os.getenv("STREAMLIT_DB_IP"), int(os.getenv("MONGO_DB_PORT"))
-    )
+        os.getenv("MONGO_DB_IP"), int(os.getenv("MONGO_DB_PORT")), username=DB_USERNAME, password=DB_PASSWORD
+    )  # TODO: get client info from dotenv
+
     db = client[os.getenv("MONGO_DB_NAME")]
     collection = db[os.getenv("MONGO_COLLECTION_NAME")]
+    alter_path = os.getenv("WAV_DIR")
     post = {
         "attribute": attribute,
-        "audio_path": audio_path,
+        "audio_path": os.path.join(alter_path, os.path.basename(audio_path)),
         "text_path": "",
         "status": "unprocessed",
         "add_date": "",
@@ -69,7 +74,11 @@ class Recorder:
 
             # recording.sh内でtmp.wavに音声を書き込んでいるので、
             # 正式な形にrenameする必要がある
-            shutil.move(os.path.join(self.tmpdir, "tmp.wav"), self.output_file_path)
+            tmp_path = os.path.join(self.tmpdir, "tmp.wav")
+            subprocess.run(
+                f"ffmpeg -y -i '{tmp_path}' -vn -ac 2 -ar 44100 -acodec pcm_s16le -f wav '{tmp_path}_'", shell=True
+            )
+            shutil.move(tmp_path + "_", self.output_file_path)
             # DBに登録
             registData(attribute=self.attribute, audio_path=self.tmp_file_path)
 
