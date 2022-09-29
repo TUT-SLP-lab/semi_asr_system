@@ -18,6 +18,5 @@ class TextHandler:
         file_path = f"{self.local_output_path}/{file_name}"
         FileIO.output_text_file(text_list, file_path)
 
-    def send_text_outline(self, title: str, text_list: List[str], collection_name: str):
-        texts = "\n".join(text_list)
+    def send_text_outline(self, text: str, collection_name: str, title: str=None):
         self.outline_clinet.create_document(title, texts, collection_name)

@@ -14,9 +14,6 @@ class ASRInference:
 
     def speech2text(self, audio_path: str):
         audio, rate = soundfile.read(audio_path)
-        #print(f"processing:{i}/{len(audio_path)} sound length :{len(audio)}")
-        #if len(audio) == 0:
-        #    break
         result = self.s2t(audio)
         return (result[0])[0]
 

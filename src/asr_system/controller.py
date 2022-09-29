@@ -48,6 +48,9 @@ class Controller:
             hyp_list = []
             for i, wav in split_wav_list:
                 hyp = self.asr_inference.speech2text(wav)
+                print(f"processing:{i}/{len(split_wav_list)} sound length :{len(wav)}")
+                if len(audio) == 0:
+                    break
                 hyp_list.append(hyp)
                 self.text_handler.send_text_outline(attribute, hyp, getenv("OUTLINE_COLLECTION_NAME"))
 
