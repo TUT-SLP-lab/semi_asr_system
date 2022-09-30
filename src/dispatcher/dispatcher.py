@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 app = FastAPI()
 load_dotenv()
-DISPATCHER_PORT = os.getenv("DISPATCHER_PORT")
+DISPATCHER_PORT = int(os.getenv("DISPATCHER_PORT"))
 
 
 
@@ -45,4 +45,4 @@ def ScheduledExecution():
     db.DeleteAndSurveillance()
 
 
-uvicorn.run(app, host="0.0.0.0", port=int(DISPATCHER_PORT))
+uvicorn.run(app, host="0.0.0.0", port=DISPATCHER_PORT)

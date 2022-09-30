@@ -12,7 +12,6 @@ class SplitAudio:
         in_format_op: str = None,
         out_format_op: str = None,
         silence_params: list = [1, 0.2, 0.2, 1, 0.2, 0.2],
-        optim: bool = False,
     ):
         if not silence_params == None:
             if not len(silence_params) == 6:

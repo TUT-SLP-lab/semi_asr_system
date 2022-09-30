@@ -156,3 +156,5 @@ test/asr_inference/data
 
 docker/data
 db
+
+*.wav

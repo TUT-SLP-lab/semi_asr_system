@@ -67,7 +67,6 @@ def postAudioData(id):
 
 # 録音しているところから_idを受け取る
 def postRecordData(id):
-    # id = ObjectId(_id)
     check_process_status = collection.find_one({"status": "processing"})
     if check_process_status:
         return "processing now"

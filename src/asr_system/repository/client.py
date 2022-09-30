@@ -1,13 +1,13 @@
 import requests
 import json
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List
 from os import getenv
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-class DispacherClinent:
+class DispacherClient:
     def __init__(self) -> None:
         self.access_token = getenv("OUTLINE_ACCESS_TOKEN")
         self.endpoint = f"http://{getenv('DISPATCHER_IP')}:{getenv('DISPATCHER_PORT')}/api"
@@ -61,24 +61,7 @@ class OutlineClient:
 
         return result.status_code, json.loads(result.content)
 
-    def collection_list(self) -> Tuple[int, Dict]:
-        """
-        get collection list
-
-        Args:
-        Return:
-            int: status code
-            json: result contents
-        """
-        # payload = {"offset": 0, "limit": 10}
-        result = requests.post(
-            f"{self.endpoint}/collections.list",
-            headers=self.headers,  # , data=json.dumps(payload)
-        )
-
-        return result.status_code, json.loads(result.content)
-
-    def create_document(self, title: str, text: str, collection_name: str) -> Tuple[int, Dict]:
+    def create_document(self, title: str) -> Tuple[int, Dict]:
         """
         create document in Outline
 
@@ -90,17 +73,10 @@ class OutlineClient:
             int: result code
             Dict: result content
         """
-        # get collection id
-        _, collection_json = self.collection_list()
-        collectionId = self._get_collection_id(collection_json, collection_name)
-
-        # TODO get parent id, Allow the ID of the parent document to be specified.
 
         payload = {
             "title": title,
-            "text": text,
-            "collectionId": collectionId,
-            # "parentDocumentId": "",
+            "collectionId": getenv("OUTLINE_COLLECTION_ID"),
             "publish": True,
         }
 
@@ -110,21 +86,38 @@ class OutlineClient:
             data=json.dumps(payload),
         )
 
+        return json.loads(result.content)["data"]["id"]
+
+    def update_document(self, text: str, document_id: str) -> Tuple[int, Dict]:
+        payload = {
+            "text": text+'\n',
+            "id": document_id,
+            "append": True,
+            "publish": True,
+        }
+
+        result = requests.post(
+            f"{self.endpoint}/documents.update",
+            headers=self.headers,
+            data=json.dumps(payload),
+        )
+        print(json.loads(result.content)['data']['text'])
+
         return result.status_code, json.loads(result.content)
+    
+    def final_update(self, text_list: List[str], document_id: str) -> Tuple[int, Dict]:
+        payload = {
+            "text": '\n'.join(text_list),
+            "id": document_id,
+            "append": False,
+            "publish": True,
+        }
 
-    @staticmethod
-    def _get_collection_id(collection_list: json, collenction_name: str) -> str:
-        """
-        get collection id in OutLine
+        result = requests.post(
+            f"{self.endpoint}/documents.update",
+            headers=self.headers,
+            data=json.dumps(payload),
+        )
+        print(json.loads(result.content)['data']['text'])
 
-        Args:
-            collection_list(json): json collection information
-            collection_name(str): collection name
-        Return:
-            str: collection id
-        """
-        for data in collection_list["data"]:
-            if data["name"] == collenction_name:
-                return data["id"]
-
-        raise RuntimeError(f"collection name ;{collenction_name} is not exist in OutLine")
+        return result.status_code, json.loads(result.content)
