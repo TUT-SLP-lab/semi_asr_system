@@ -112,6 +112,26 @@ class OutlineClient:
 
         return result.status_code, json.loads(result.content)
 
+    def update_document(self, text: str, collection_name: str) -> Tuple[int, Dict]:
+        # get collection id
+        _, collection_json = self.collection_list()
+        Id = self._get_collection_id(collection_json, collection_name)
+
+        payload = {
+            "text": text,
+            "Id": Id,
+            "append": True,
+            "publish": True,
+        }
+
+        result = requests.post(
+            f"{self.endpoint}/documents.update",
+            headers=self.headers,
+            data=json.dumps(payload),
+        )
+
+        return result.status_code, json.loads(result.content)
+
     @staticmethod
     def _get_collection_id(collection_list: json, collenction_name: str) -> str:
         """

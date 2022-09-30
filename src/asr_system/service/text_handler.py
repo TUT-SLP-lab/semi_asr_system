@@ -22,6 +22,8 @@ class TextHandler:
         # notify to dispatcher api
         self.dispatcher_client.nofity_finish_send_text(file_path)
 
-    def send_text_outline(self, title: str, text_list: List[str], collection_name: str):
-        texts = "\n".join(text_list)
-        self.outline_clinet.create_document(title, texts, collection_name)
+    def send_text_outline(self, collection_name: str, title: str=None, text: str=None):
+        if title is None:
+            self.outline_clinet.update_document(title, text, collection_name)
+        else:
+            self.outline_clinet.create_document(title, text, collection_name)

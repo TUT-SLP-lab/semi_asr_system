@@ -40,9 +40,17 @@ class Controller:
             split_wav_list = FileIO.get_all_filepath(split_wav_dir, "*.wav")
             split_wav_list.sort()
             print(f"wavlit {split_wav_list}")
-            # step2 asr inference
+
+            # step2 asr inference and send
             print("Step2 asr inference")
-            hyp_list = self.asr_inference.speech2text(split_wav_list)
+            
+            self.text_handler.send_text_outline(collection_name=getenv("OUTLINE_COLLECTION_NAME"), title=attribute)
+            hyp_list = []
+            for i, wav in split_wav_list:
+                hyp = self.asr_inference.speech2text(wav)
+                print(f"processing:{i}/{len(split_wav_list)}")
+                hyp_list.append(hyp)
+                self.text_handler.send_text_outline(collection_name=getenv("OUTLINE_COLLECTION_NAME"), text=hyp)
 
             # 分割済み音声を削除
 
@@ -54,7 +62,6 @@ class Controller:
 
             wav_basename = os.path.basename(wav_path)
             self.text_handler.write_text(hyp_list, f"{wav_basename}.txt")
-            self.text_handler.send_text_outline(attribute, hyp_list, getenv("OUTLINE_COLLECTION_NAME"))
 
         except Exception as e:
             print(f"error occored {e}")
