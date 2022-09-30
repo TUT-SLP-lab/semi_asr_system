@@ -86,6 +86,7 @@ class OutlineClient:
             data=json.dumps(payload),
         )
 
+        print(json.loads(result.content))
         return json.loads(result.content)["data"]["id"]
 
     def update_document(self, text: str, document_id: str) -> Tuple[int, Dict]:

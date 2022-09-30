@@ -69,5 +69,5 @@ class Controller:
             print(traceback.format_exc())
             print(f"error occored {e}")
         finally:
-            FileIO.delete_all_file(split_wav_dir)
+            FileIO.delete_all_file()
             self.is_running = False
