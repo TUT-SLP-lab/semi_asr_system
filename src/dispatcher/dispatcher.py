@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 app = FastAPI()
 load_dotenv()
-DISPATCHER_PORT = os.getenv("DISPATCHER_PORT")
+DISPATCHER_PORT = int(os.getenv("DISPATCHER_PORT"))
 
 
 
