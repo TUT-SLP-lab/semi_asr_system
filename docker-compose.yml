@@ -26,7 +26,7 @@ services:
             - DISPATCHER_PORT
         ports:
             - "5000:5000"
-        command: "python src/run_asr_server.py"
+        command: "python -u src/run_asr_server.py"
         volumes:
             - ./src:/app/src
             - ./test:/app/test
@@ -77,6 +77,6 @@ services:
         - ASR_SYSTEM_IP
         - ASR_SYSTEM_PORT
 
-      command: "python3 dispatcher.py"
+      command: "python3 -u dispatcher.py"
       volumes:
         - ./src/dispatcher:/app

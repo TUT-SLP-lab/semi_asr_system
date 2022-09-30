@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-class DispacherClinent:
+class DispacherClient:
     def __init__(self) -> None:
         self.access_token = getenv("OUTLINE_ACCESS_TOKEN")
         self.endpoint = f"http://{getenv('DISPATCHER_IP')}:{getenv('DISPATCHER_PORT')}/api"
@@ -78,7 +78,7 @@ class OutlineClient:
 
         return result.status_code, json.loads(result.content)
 
-    def create_document(self, title: str, text: str, collection_name: str) -> Tuple[int, Dict]:
+    def create_document(self, title: str, collection_name: str) -> Tuple[int, Dict]:
         """
         create document in Outline
 
@@ -92,15 +92,13 @@ class OutlineClient:
         """
         # get collection id
         _, collection_json = self.collection_list()
-        collectionId = self._get_collection_id(collection_json, collection_name)
+        # collectionId = self._get_collection_id(collection_json, collection_name)
 
         # TODO get parent id, Allow the ID of the parent document to be specified.
 
         payload = {
             "title": title,
-            "text": text,
-            "collectionId": collectionId,
-            # "parentDocumentId": "",
+            "collectionId": getenv("OUTLINE_COLLECTION_ID"),
             "publish": True,
         }
 
@@ -110,16 +108,16 @@ class OutlineClient:
             data=json.dumps(payload),
         )
 
-        return result.status_code, json.loads(result.content)
+        return json.loads(result.content)["data"]["id"]
 
-    def update_document(self, text: str, collection_name: str) -> Tuple[int, Dict]:
+    def update_document(self, text: str, document_id: str) -> Tuple[int, Dict]:
         # get collection id
         _, collection_json = self.collection_list()
-        Id = self._get_collection_id(collection_json, collection_name)
+        #Id = self._get_collection_id(collection_json, collection_id)
 
         payload = {
             "text": text,
-            "Id": Id,
+            "Id": document_id,
             "append": True,
             "publish": True,
         }

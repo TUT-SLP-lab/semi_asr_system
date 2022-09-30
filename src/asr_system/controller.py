@@ -44,13 +44,13 @@ class Controller:
             # step2 asr inference and send
             print("Step2 asr inference")
             
-            self.text_handler.send_text_outline(collection_name=getenv("OUTLINE_COLLECTION_NAME"), title=attribute)
+            #self.text_handler.send_text_outline(collection_name=getenv("OUTLINE_COLLECTION_NAME"), title=attribute)
             hyp_list = []
             for i, wav in split_wav_list:
                 hyp = self.asr_inference.speech2text(wav)
                 print(f"processing:{i}/{len(split_wav_list)}")
                 hyp_list.append(hyp)
-                self.text_handler.send_text_outline(collection_name=getenv("OUTLINE_COLLECTION_NAME"), text=hyp)
+                self.text_handler.send_text_outline(text=hyp)
 
             # 分割済み音声を削除
 
