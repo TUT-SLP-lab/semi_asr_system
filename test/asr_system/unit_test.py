@@ -2,11 +2,11 @@
 import requests
 import pprint
 
-baseurl = "http://127.0.0.1:5000/api/"
+baseurl = "http://0.0.0.0:5000/api/"
 
 item_data = {
     "attribute": "attribute",
-    "audio_path": "/media/wav_data/2022-08-19_test_record_004_44100.wav",
+    "audio_path": "/mnt/wav_data/K006_003a_IC0A.wav",
 }
 
 r_post = requests.post(baseurl + "inference", json=item_data)
