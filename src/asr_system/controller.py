@@ -15,7 +15,6 @@ class Controller:
         self.asr_inference = ASRInference(
             getenv("ASR_MODEL_CONFIG"), getenv("ASR_MODEL_PATH"), getenv("LM_MODEL_CONFIG"), getenv("LM_MODEL_PATH")
         )
-        # self.format_text = FormatText()
         self.split_audio = SplitAudio(in_format_op="-V3", out_format_op=None, silence_params=[1, 0.4, 0.2] * 2)
         self.text_handler = TextHandler()
         self.is_running = False
@@ -40,25 +39,30 @@ class Controller:
             split_wav_list = FileIO.get_all_filepath(split_wav_dir, "*.wav")
             split_wav_list.sort()
             print(f"wavlit {split_wav_list}")
+            
+            self.text_handler.initialize_document(attribute)
 
             # step2 asr inference and send
             print("Step2 asr inference")
             
-            #self.text_handler.send_text_outline(collection_name=getenv("OUTLINE_COLLECTION_NAME"), title=attribute)
             hyp_list = []
-            for i, wav in split_wav_list:
+            for i, wav in enumerate(split_wav_list):
                 hyp = self.asr_inference.speech2text(wav)
                 print(f"processing:{i}/{len(split_wav_list)}")
+
+                # 分割済み音声を削除
+
+                # step3 format text
+                print("Step3 format text")
+                
                 hyp_list.append(hyp)
+                
+                # step4 send text
+                print("Step4 send text")
                 self.text_handler.send_text_outline(text=hyp)
 
-            # 分割済み音声を削除
-
-            # step3 format text
-            print("Step3 format text")
-
             # step4 wirte and send
-            print("Step4 write and send")
+            print("Step5 write text")
 
             wav_basename = os.path.basename(wav_path)
             self.text_handler.write_text(hyp_list, f"{wav_basename}.txt")

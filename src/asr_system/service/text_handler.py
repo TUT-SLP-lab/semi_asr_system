@@ -9,12 +9,13 @@ load_dotenv()
 
 
 class TextHandler:
-    def __init__(self, title:str) -> None:
+    def __init__(self) -> None:
 
         self.outline_clinet = OutlineClient()
         self.dispatcher_client = DispacherClient()
         self.local_output_path = getenv("TEXT_OUTPUT")
         
+    def initialize_document(self, title:str):
         self.document_id = self.outline_clinet.create_document(title)
 
     def write_text(self, text_list: List, file_name: str):
