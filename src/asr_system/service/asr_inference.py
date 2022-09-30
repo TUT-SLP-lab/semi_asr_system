@@ -20,14 +20,14 @@ class ASRInference:
             audio = audio[:, 0]
         # 長さ0の場合は無視
         if len(audio) == 0:
-            pass
+            return '[emp]'
         else:
             print(f"audio dim{audio.ndim}")
             # 16000kHzに変換
             audio = resampy.resample(audio, rate, 16000)
             print(f"sound length :{len(audio)}")
             result = self.s2t(audio)
-        return (result[0])[0]
+            return (result[0])[0]
 
     def output_file(self, hyp: list, fname: str):
         h = "\n".join(hyp)

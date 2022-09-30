@@ -86,13 +86,12 @@ class OutlineClient:
             data=json.dumps(payload),
         )
 
-        print(json.loads(result.content))
         return json.loads(result.content)["data"]["id"]
 
     def update_document(self, text: str, document_id: str) -> Tuple[int, Dict]:
         payload = {
-            "text": text,
-            "Id": document_id,
+            "text": text+'\n',
+            "id": document_id,
             "append": True,
             "publish": True,
         }
@@ -102,5 +101,6 @@ class OutlineClient:
             headers=self.headers,
             data=json.dumps(payload),
         )
+        print(json.loads(result.content)['data']['text'])
 
         return result.status_code, json.loads(result.content)

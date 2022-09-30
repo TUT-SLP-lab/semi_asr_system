@@ -17,7 +17,7 @@ services:
             - OUTLINE_ACCESS_TOKEN
             - OUTLINE_ADDRESS
             - OUTLINE_PORT
-            - OUTLINE_COLLECTION_NAME
+            - OUTLINE_COLLECTION_ID
             - WAV_DIR
             - SPLIT_WAV
             - TEXT_OUTPUT
@@ -76,6 +76,7 @@ services:
         - RECORDER_PORT
         - ASR_SYSTEM_IP
         - ASR_SYSTEM_PORT
+        - DISPATCHER_PORT
 
       command: "python3 -u dispatcher.py"
       volumes:
