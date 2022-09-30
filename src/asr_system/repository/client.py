@@ -1,6 +1,6 @@
 import requests
 import json
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List
 from os import getenv
 from dotenv import load_dotenv
 
@@ -93,6 +93,23 @@ class OutlineClient:
             "text": text+'\n',
             "id": document_id,
             "append": True,
+            "publish": True,
+        }
+
+        result = requests.post(
+            f"{self.endpoint}/documents.update",
+            headers=self.headers,
+            data=json.dumps(payload),
+        )
+        print(json.loads(result.content)['data']['text'])
+
+        return result.status_code, json.loads(result.content)
+    
+    def final_update(self, text_list: List[str], document_id: str) -> Tuple[int, Dict]:
+        payload = {
+            "text": '\n'.join(text_list),
+            "id": document_id,
+            "append": False,
             "publish": True,
         }
 

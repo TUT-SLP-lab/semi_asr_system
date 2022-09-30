@@ -58,6 +58,7 @@ class Controller:
                 # step4 send text
                 print("Step4 send text")
                 self.text_handler.send_text_outline(text=hyp)
+            self.text_handler.final_send_text_outline(hyp_list)
 
             # step4 wirte and send
             print("Step5 write text")
