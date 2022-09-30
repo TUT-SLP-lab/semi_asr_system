@@ -26,9 +26,4 @@ class TextHandler:
         self.dispatcher_client.nofity_finish_send_text(file_path)
 
     def send_text_outline(self, text: str):
-        # if title == None:
-        print("#"*30)
         self.outline_clinet.update_document(text, self.document_id)
-        # else:
-        #     print("@"*30)
-        #     self.outline_clinet.create_document(title, collection_name)

@@ -1,11 +1,9 @@
 from asr_system.service.asr_inference import ASRInference
 from asr_system.service.text_handler import TextHandler
-
-# from asr_system.service.format_text import FormatText
 from asr_system.service.split_audio import SplitAudio
 
 import os
-import shutil
+import traceback
 from asr_system.repository.file_io import FileIO
 from os import getenv
 
@@ -68,6 +66,7 @@ class Controller:
             self.text_handler.write_text(hyp_list, f"{wav_basename}.txt")
 
         except Exception as e:
+            print(traceback.format_exc())
             print(f"error occored {e}")
         finally:
             FileIO.delete_all_file(split_wav_dir)

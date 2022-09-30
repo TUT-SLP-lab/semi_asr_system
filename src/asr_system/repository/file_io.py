@@ -1,16 +1,15 @@
 from typing import List
 import glob
 import os
-import shutil
 
 
 class FileIO:
     @staticmethod
-    def read_audio(self):
+    def read_audio():
         pass
 
     @staticmethod
-    def write_text(self):
+    def write_text():
         pass
 
     @staticmethod
@@ -40,7 +39,7 @@ class FileIO:
             f.write(h)
 
     @staticmethod
-    def delete_all_file(target_dir: str):
+    def delete_all_file():
         """
         target directoryの中のファイルすべてを削除
         """
