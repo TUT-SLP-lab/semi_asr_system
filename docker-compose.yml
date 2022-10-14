@@ -5,7 +5,6 @@ services:
             context: .
             dockerfile: docker/asr_system/Dockerfile
         image: kinouchi1000/espnet_asr_server
-        runtime: nvidia
         environment:
             - NVIDIA_VISIBLE_DEVICES=all
             - ASR_MODEL_PATH
@@ -30,10 +29,10 @@ services:
         volumes:
             - ./src:/app/src
             - ./test:/app/test
-            - ./docker/data/text:/mnt/text
-            - ./docker/data/models:/mnt/models
-            - ./docker/data/wav_data:/mnt/wav_data
-            - ./docker/data/split_wav:/mnt/split_wav
+            - ./docker/data/text:${TEXT_OUTPUT}
+            - ./docker/data/models:${MODEL_DIR}
+            - ./docker/data/wav_data:${WAV_DIR}
+            - ./docker/data/split_wav:${SPLIT_WAV}
             
     mongo:
         image: mongo

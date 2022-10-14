@@ -76,7 +76,7 @@ class Recorder:
             # 正式な形にrenameする必要がある
             tmp_path = os.path.join(self.tmpdir, "tmp.wav")
             subprocess.run(
-                f"ffmpeg -y -i '{tmp_path}' -vn -ac 2 -ar 44100 -acodec pcm_s16le -f wav '{tmp_path}_'", shell=True
+                f"ffmpeg -y -i '{tmp_path}' -vn -ac 1 -ar 44100 -acodec pcm_s16le -f wav '{tmp_path}_'", shell=True
             )
             shutil.move(tmp_path + "_", self.output_file_path)
             # DBに登録
