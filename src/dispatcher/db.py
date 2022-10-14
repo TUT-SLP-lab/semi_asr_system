@@ -87,14 +87,6 @@ def DeleteAndSurveillance():
             collection.update_one({"_id": processing_data["_id"]}, {"$set": {"add_time": datetime.datetime.now()}})
             print("processing ok")
 
-    completed_data = collection.find_one({"status": "completed"})
-    if completed_data:
-        if abs(completed_data["add_time"] - datetime.datetime.now()).days >= 14:
-            # 2週間以上経ったものを削除
-            os.remove(completed_data["audio_path"])  # あってるのか確認
-            collection.delete_one({"_id": completed_data["_id"]})
-            print("delete ok")
-
     if not processing_data:
         # processingがなかったらタスクを投げる
         unprocessed_data = collection.find_one({"status": "unprocessed"})
