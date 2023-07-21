@@ -60,7 +60,7 @@ class Recorder:
             self.output_file_path = os.path.join(self.output_dir, f"{self.attribute}.wav")
 
             # subprocessで録音処理を実行
-            self.record = subprocess.Popen(f"exec {self.cmd}", stderr=subprocess.PIPE, shell=True)
+            self.record = subprocess.Popen(f"exec {self.cmd} {self.tmp_file_path}", stderr=subprocess.PIPE, shell=True)
 
     def stop(self) -> None:
         if self.record is not None:
@@ -74,13 +74,15 @@ class Recorder:
 
             # recording.sh内でtmp.wavに音声を書き込んでいるので、
             # 正式な形にrenameする必要がある
-            tmp_path = os.path.join(self.tmpdir, "tmp.wav")
+            # tmp_path = os.path.join(self.tmpdir, "tmp.wav")
             subprocess.run(
-                f"ffmpeg -y -i '{tmp_path}' -vn -ac 1 -ar 44100 -acodec pcm_s16le -f wav '{tmp_path}_'", shell=True
+                f"ffmpeg -y -i '{self.tmp_file_path}' -vn -ac 1 -ar 44100 -acodec pcm_s16le -f wav '{self.tmp_file_path}_'", shell=True
             )
-            shutil.move(tmp_path + "_", self.output_file_path)
+            print(f"shutil.move {self.tmp_file_path}_ -> {self.output_file_path}")
+            shutil.move(self.tmp_file_path + "_", self.output_file_path)
             # DBに登録
-            registData(attribute=self.attribute, audio_path=self.tmp_file_path)
+            print(f"regist data: attribute={self.attribute}, audio_path={self.output_file_path}")
+            registData(attribute=self.attribute, audio_path=self.output_file_path)
 
     def is_alive(self) -> bool:
         return self.record is not None
