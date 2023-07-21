@@ -5,6 +5,7 @@ services:
             context: .
             dockerfile: docker/asr_system/Dockerfile
         image: kinouchi1000/espnet_asr_server
+        restart: always
         environment:
             - NVIDIA_VISIBLE_DEVICES=all
             - ASR_MODEL_PATH
@@ -60,6 +61,7 @@ services:
 
     dispatcher:
       container_name: dispatcher
+      restart: always
       build:
         context: .
         dockerfile: docker/dispatcher/Dockerfile
