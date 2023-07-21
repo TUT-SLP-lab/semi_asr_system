@@ -27,13 +27,13 @@ class Controller:
             None
         """
         self.is_running = True
-        split_wav_dir = getenv("SPLIT_WAV")
-        os.makedirs(split_wav_dir, exist_ok=True)
+        split_wav_base_dir = getenv("SPLIT_WAV")
+        os.makedirs(split_wav_base_dir, exist_ok=True)
         try:
             # step1 split audio
             print("Step1 split audio")
 
-            self.split_audio.split(wav_path, split_wav_dir)
+            _, split_wav_dir = self.split_audio.split(wav_path, split_wav_base_dir)
             split_wav_list = FileIO.get_all_filepath(split_wav_dir, "*.wav")
             split_wav_list.sort()
             print(f"wavlit {split_wav_list}")
@@ -70,5 +70,5 @@ class Controller:
             print(traceback.format_exc())
             print(f"error occored {e}")
         finally:
-            FileIO.delete_all_file()
+            # FileIO.delete_all_file()
             self.is_running = False
