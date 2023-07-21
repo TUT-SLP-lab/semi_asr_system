@@ -9,6 +9,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import requests
 import shutil
+import webbrowser
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -123,6 +124,12 @@ class ThreadManager:
 
 def main():
     st.thread_manager = ThreadManager()
+    MEET_ID = os.getenv("MEET_ID")
+
+    if st.button("Connect Meet"):
+        url = f"https://meet.google.com/{MEET_ID}"
+        print(url)
+        webbrowser.get().open(url)
 
     if st.thread_manager.get_presenter() != "":
         st.text_input(
