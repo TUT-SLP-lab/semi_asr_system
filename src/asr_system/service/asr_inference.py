@@ -1,17 +1,12 @@
-import espnet2
+import torch
 import soundfile
 import resampy
-from espnet2.bin.asr_inference import Speech2Text
-
+import nemo.collections.asr as nemo_asr
 
 class ASRInference:
     def __init__(self, asr_train_config: str, asr_model_file: str, lm_train_config: str, lm_file: str):
-        self.s2t = Speech2Text(
-            asr_train_config=asr_train_config,
-            asr_model_file=asr_model_file,
-            lm_train_config=lm_train_config,
-            lm_file=lm_file,
-        )
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.s2t = nemo_asr.models.EncDecCTCModel.restore_from(asr_model_file, map_location=device)
 
     def speech2text(self, audio_path: str):
         audio, rate = soundfile.read(audio_path)
