@@ -75,6 +75,12 @@ def postRecordData(id):
         return data
 
 
+def reRun():
+    processing_data = collection.find_one({"status": "processing"})
+    if processing_data:
+        return postAudioData(processing_data["_id"])
+
+
 # 定期実行されるべきもの
 def DeleteAndSurveillance():
     processing_data = collection.find_one({"status": "processing"})
