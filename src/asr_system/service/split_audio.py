@@ -110,6 +110,7 @@ class SplitAudio:
             Exception: When faild to run sox command for any reasons, exception is raised.
 
         Returns:
+            list: output file list
             str: output directory path
         """
         infile_type = type(infile)
@@ -150,4 +151,4 @@ class SplitAudio:
         if not res.returncode == 0:
             raise Exception("Faild to run sox command : {}".format(" ".join(self.get_command(infile, outdir))))
 
-        return os.listdir(outdir)
+        return os.listdir(outdir), outdir
