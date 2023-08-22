@@ -39,6 +39,13 @@ def postRecordData(item: Item):
     return data
 
 
+@app.post("/api/rerun")
+def reRun():
+    print("reRun is called")
+    return db.reRun()
+
+
+
 @app.delete("/api/delete")
 def ScheduledExecution():
     print("Scheduled Execution is called")

@@ -124,9 +124,9 @@ class ThreadManager:
 
 def main():
     st.thread_manager = ThreadManager()
-    MEET_ID = os.getenv("MEET_ID")
 
     if st.button("Connect Meet"):
+        MEET_ID = os.getenv("MEET_ID")
         url = f"https://meet.google.com/{MEET_ID}"
         print(url)
         webbrowser.get().open(url)
@@ -158,6 +158,13 @@ def main():
         placeholder = st.empty()
         if recorder is not None:
             placeholder.markdown("Recording")
+
+    if st.button("Rerun processing"):
+        IP = os.getenv("STREAMLIT_DIPATCHER_IP", "localhost")
+        PORT = int(os.getenv("DISPATCHER_PORT", 5001))
+        url = f"http://{IP}:{PORT}/api/rerun"
+        print(f"Rerun: {url}")
+        requests.post(url)
 
     # 別セッションでの更新に追従するために、定期的にrerunする
     time.sleep(1)
