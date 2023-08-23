@@ -16,6 +16,9 @@ ARG REQUIRE_AIS_CLI=false
 # Ensure apt-get won't prompt for selecting options
 ENV DEBIAN_FRONTEND=noninteractive
 # libavdevice-dev rerquired for latest torchaudio
+
+COPY docker/asr_system/requirements.txt ./
+
 RUN apt-get update && \
   apt-get upgrade -y && \
   apt-get install -y \
@@ -23,12 +26,12 @@ RUN apt-get update && \
   libfreetype6 \
   swig \
   ffmpeg \
-  libavdevice-dev && \
-  rm -rf /var/lib/apt/lists/*
-
-COPY docker/asr_system/requirements.txt ./
-RUN pip install -U pip setuptools \
-    pip install -r requirements.txt
+  libavdevice-dev \
+  flac \
+  coreutils \
+  && rm -rf /var/lib/apt/lists/* \
+  && pip install -r requirements.txt \
+  && pip install -U nemo_toolkit['all']
 
 WORKDIR /app/
 
