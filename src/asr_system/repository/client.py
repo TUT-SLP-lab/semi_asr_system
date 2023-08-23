@@ -33,7 +33,8 @@ class DispacherClient:
 class OutlineClient:
     def __init__(self) -> None:
         self.access_token = getenv("OUTLINE_ACCESS_TOKEN")
-        self.endpoint = f"http://{getenv('OUTLINE_ADDRESS')}:{getenv('OUTLINE_PORT')}/api"
+        self.outline_url = f"http://{getenv('OUTLINE_ADDRESS')}:{getenv('OUTLINE_PORT')}"
+        self.endpoint = f"{self.outline_url}/api"
         self.headers = {
             "authorization": f"Bearer {self.access_token}",
             "content-type": "application/json",
@@ -44,6 +45,8 @@ class OutlineClient:
         status_code, contents = self.confirm_user()
         if status_code != 200:
             raise RuntimeError(contents["message"])
+
+        self.slack_client = SlackClient()
 
     def confirm_user(self) -> Tuple[int, Dict]:
         """
@@ -61,6 +64,15 @@ class OutlineClient:
 
         return result.status_code, json.loads(result.content)
 
+    def get_url_from_id(self, document_id: str) -> str:
+        result = requests.post(
+            f"{self.endpoint}/documents.info",
+            headers=self.headers,
+            data=json.dumps({"id": document_id}),
+        )
+        json_data = json.loads(result.content)
+        return f"{self.outline_url}{json_data['data']['url']}"
+
     def create_document(self, title: str) -> Tuple[int, Dict]:
         """
         create document in Outline
@@ -74,6 +86,8 @@ class OutlineClient:
             Dict: result content
         """
 
+        self.title = title
+
         payload = {
             "title": title,
             "collectionId": getenv("OUTLINE_COLLECTION_ID"),
@@ -86,11 +100,13 @@ class OutlineClient:
             data=json.dumps(payload),
         )
 
+        self.slack_client.send_start_msg(self.title)
+
         return json.loads(result.content)["data"]["id"]
 
     def update_document(self, text: str, document_id: str) -> Tuple[int, Dict]:
         payload = {
-            "text": text+'\n',
+            "text": text+'\n\n',
             "id": document_id,
             "append": True,
             "publish": True,
@@ -101,13 +117,12 @@ class OutlineClient:
             headers=self.headers,
             data=json.dumps(payload),
         )
-        print(json.loads(result.content)['data']['text'])
 
         return result.status_code, json.loads(result.content)
-    
+
     def final_update(self, text_list: List[str], document_id: str) -> Tuple[int, Dict]:
         payload = {
-            "text": '\n'.join(text_list),
+            "text": '\n\n'.join(text_list),
             "id": document_id,
             "append": False,
             "publish": True,
@@ -118,6 +133,37 @@ class OutlineClient:
             headers=self.headers,
             data=json.dumps(payload),
         )
-        print(json.loads(result.content)['data']['text'])
+
+        outline_url = self.get_url_from_id(document_id)
+        self.slack_client.send_finish_msg(self.title, outline_url)
 
         return result.status_code, json.loads(result.content)
+
+
+class SlackClient:
+    def __init__(self):
+        self.endpoint = getenv('SLACK_WEB_HOOK_URL', None)
+
+    def send_msg(self, msg: str) -> None:
+        if self.endpoint is not None:
+            data = json.dumps({
+                "username": "SemiASR",
+                "icon_emoji": ":wiki:",
+                "text": msg,
+            })
+            requests.post(self.endpoint, data=data)
+
+    def send_finish_msg(self, attribute: str, outline_url: str) -> None:
+        if self.endpoint is not None:
+            self.send_msg((
+                f"{'_'.join(attribute.split('_')[1:])}"
+                "の書き起こしが完了しました。\n"
+                f"URL: {outline_url}"
+            ))
+
+    def send_start_msg(self, attribute: str) -> None:
+        if self.endpoint is not None:
+            self.send_msg((
+                f"{'_'.join(attribute.split('_')[1:])}"
+                "の書き起こしを行っています。"
+            ))
