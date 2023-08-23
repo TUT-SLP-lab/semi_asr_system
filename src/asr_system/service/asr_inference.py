@@ -8,6 +8,15 @@ class ASRInference:
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.s2t = nemo_asr.models.EncDecCTCModel.restore_from(asr_model_file, map_location=device)
 
+    def speech2texts(self, audio_paths: list[str]):
+        removed_audio_paths = ASRInference._remove_length_zero_audio(audio_paths)
+        result = self.s2t.transcribe(removed_audio_paths,
+                                     verbose=True,
+                                     batch_size=50,
+                                     )
+        torch.cuda.empty_cache()
+        return result
+
     def speech2text(self, audio_path: str):
         audio, rate = soundfile.read(audio_path)
         # 2チャンネルの場合、一つに変換
@@ -28,3 +37,8 @@ class ASRInference:
         h = "\n".join(hyp)
         with open(fname, mode="w") as f:
             f.write(h)
+
+    def _remove_length_zero_audio(audio_paths: list[str]) -> list[str]:
+        return [path
+                for path in audio_paths
+                if int(subprocess.run(["soxi", "-s", path], capture_output=True, text=True).stdout) != 0]
