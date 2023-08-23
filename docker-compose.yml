@@ -20,7 +20,12 @@ services:
             - ./docker/data/models:${MODEL_DIR}
             - ./docker/data/wav_data:${WAV_DIR}
             - ./docker/data/split_wav:${SPLIT_WAV}
-            
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - capabilities: [gpu]
+
     mongo:
         image: mongo
         restart: always
