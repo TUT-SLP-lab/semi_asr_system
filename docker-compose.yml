@@ -5,24 +5,11 @@ services:
             context: .
             dockerfile: docker/asr_system/Dockerfile
         restart: always
+        env_file:
+            - .env
         environment:
             - NVIDIA_VISIBLE_DEVICES=all
-            - ASR_MODEL_PATH
-            - ASR_MODEL_CONFIG
-            - LM_MODEL_PATH
-            - LM_MODEL_CONFIG
-            - ASR_SYSTEM_PORT
-            - ASR_SYSTEM_IP
-            - OUTLINE_ACCESS_TOKEN
-            - OUTLINE_ADDRESS
-            - OUTLINE_PORT
-            - OUTLINE_COLLECTION_ID
-            - WAV_DIR
-            - SPLIT_WAV
-            - TEXT_OUTPUT
-            - AUDIO_OUTPUT_DIR
             - DISPATCHER_IP=dispatcher
-            - DISPATCHER_PORT
         ports:
             - "5000:5000"
         command: "python -u src/run_asr_server.py"
