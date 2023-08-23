@@ -1,33 +1,37 @@
-FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
+ARG BASE_IMAGE=nvcr.io/nvidia/pytorch:23.06-py3
 
-RUN apt-get -y update \
-    && apt-get -y upgrade  \
-    && apt-get -y install \ 
-    git \
-    wget \
-    make \
-    cmake \
-    sox \
-    libsndfile1-dev \
-    ffmpeg \
-    flac \
-    coreutils
+# build an image that includes only the nemo dependencies, ensures that dependencies
+# are included first for optimal caching, and useful for building a development
+# image (by specifying build target as `nemo-deps`)
+FROM ${BASE_IMAGE} as nemo-deps
 
-RUN apt-get -y install locales && \
-    localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
+# dependency flags; should be declared after FROM
+# torchaudio: not required by default
+ARG REQUIRE_TORCHAUDIO=false
+# k2: not required by default
+ARG REQUIRE_K2=false
+# ais cli: not required by default, install only if required
+ARG REQUIRE_AIS_CLI=false
 
-
-# install ESPnet
-RUN cd /opt \
-    && git clone --depth 1 https://github.com/espnet/espnet \
-    && cd espnet/tools \
-    && rm -f activate_python.sh && touch activate_python.sh \
-    && make TH_VERSION=1.11.0 CUDA_VERSION=11.3
-
+# Ensure apt-get won't prompt for selecting options
+ENV DEBIAN_FRONTEND=noninteractive
+# libavdevice-dev rerquired for latest torchaudio
 
 COPY docker/asr_system/requirements.txt ./
-RUN pip install -U pip setuptools \
-    pip install -r requirements.txt
+
+RUN apt-get update && \
+  apt-get upgrade -y && \
+  apt-get install -y \
+  libsndfile1 sox \
+  libfreetype6 \
+  swig \
+  ffmpeg \
+  libavdevice-dev \
+  flac \
+  coreutils \
+  && rm -rf /var/lib/apt/lists/* \
+  && pip install -r requirements.txt \
+  && pip install -U nemo_toolkit['all']
 
 WORKDIR /app/
 

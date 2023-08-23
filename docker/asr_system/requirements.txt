@@ -1,5 +1,8 @@
+setuptools
+Cython
 fastapi
 uvicorn
 requests
 python-dotenv
 resampy
+ujson
