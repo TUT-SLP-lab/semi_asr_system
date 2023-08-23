@@ -94,3 +94,11 @@ python test/asr_system/unit_test.py
     ```
     python test/asr_system/unit_test.py
     ```
+
+## Slack webhook urlの登録方法
+
+1. [Webhookを新規作成するページ](https://slack.com/services/new/incoming-webhook)に行く
+2. 右上のワークスペース選択ボタンでワークスペースを自身のものに変更する
+3. 投稿したいチャンネルを選択し、作成する
+4. webhook URLの項目のURLをコピーする
+4. `.env`ファイル内の`SLACK_WEB_HOOK_URL`にコピーしたURLを設定する
