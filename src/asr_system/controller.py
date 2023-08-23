@@ -37,31 +37,18 @@ class Controller:
             split_wav_list = FileIO.get_all_filepath(split_wav_dir, "*.wav")
             split_wav_list.sort()
             print(f"wavlit {split_wav_list}")
-            
+
             self.text_handler.initialize_document(attribute)
 
-            # step2 asr inference and send
+            # step2 asr inference
             print("Step2 asr inference")
-            
-            hyp_list = []
-            for i, wav in enumerate(split_wav_list):
-                hyp = self.asr_inference.speech2text(wav)
-                print(f"processing:{i}/{len(split_wav_list)}")
+            hyp_list = self.asr_inference.speech2texts(split_wav_list)
 
-                # 分割済み音声を削除
-
-                # step3 format text
-                print("Step3 format text")
-                
-                hyp_list.append(hyp)
-                
-                # step4 send text
-                print("Step4 send text")
-                self.text_handler.send_text_outline(text=hyp)
+            print("Step3 send text")
             self.text_handler.final_send_text_outline(hyp_list)
 
             # step4 wirte and send
-            print("Step5 write text")
+            print("Step4 write text")
 
             wav_basename = os.path.basename(wav_path)
             self.text_handler.write_text(hyp_list, f"{wav_basename}.txt")
