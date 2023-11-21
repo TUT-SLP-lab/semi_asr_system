@@ -120,7 +120,7 @@ class OutlineClient:
 
         return result.status_code, json.loads(result.content)
 
-    def final_update(self, text_list: List[str], document_id: str) -> Tuple[int, Dict]:
+    def overwrite_document(self, text_list: List[str], document_id: str) -> Tuple[int, Dict]:
         payload = {
             "text": '\n\n'.join(text_list),
             "id": document_id,
@@ -133,11 +133,14 @@ class OutlineClient:
             headers=self.headers,
             data=json.dumps(payload),
         )
-
         outline_url = self.get_url_from_id(document_id)
+        return result.status_code, json.loads(result.content), outline_url
+
+    def final_update(self, text_list: List[str], document_id: str) -> Tuple[int, Dict]:
+        status_code, result_content, outline_url = self.overwrite_document(text_list, document_id)
         self.slack_client.send_finish_msg(self.title, outline_url)
 
-        return result.status_code, json.loads(result.content)
+        return status_code, result_content
 
 
 class SlackClient:
