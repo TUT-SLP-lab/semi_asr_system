@@ -68,7 +68,9 @@ class TextHandler:
         file_path = f"{self.local_output_path}/{file_name}"
         FileIO.output_text_file(text_list, file_path)
 
-        # notify to dispatcher api
+    # notify to dispatcher api
+    def notify_to_dispatcher(self, file_name):
+        file_path = f"{self.local_output_path}/{file_name}"
         self.dispatcher_client.nofity_finish_send_text(file_path)
 
     def send_text_outline(self, text: str):
