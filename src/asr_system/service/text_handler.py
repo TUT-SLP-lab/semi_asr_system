@@ -74,5 +74,8 @@ class TextHandler:
     def send_text_outline(self, text: str):
         self.outline_client.update_document(text, self.document_id)
 
+    def send_text_list_to_outline(self, text_list: List[str]):
+        self.outline_client.overwrite_document(text_list, self.document_id)
+
     def final_send_text_outline(self, text_list: List[str]):
         self.outline_client.final_update(text_list, self.document_id)
