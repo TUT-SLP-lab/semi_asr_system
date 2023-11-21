@@ -6,3 +6,5 @@ requests
 python-dotenv
 resampy
 ujson
+openai
+janome

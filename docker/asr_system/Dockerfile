@@ -29,8 +29,9 @@ RUN apt-get update && \
   libavdevice-dev \
   flac \
   coreutils \
-  && rm -rf /var/lib/apt/lists/* \
-  && pip install -r requirements.txt \
+  && rm -rf /var/lib/apt/lists/*
+RUN pip install -r requirements.txt \
+  && pip install openai janome \
   && pip install -U nemo_toolkit['all']
 
 WORKDIR /app/
