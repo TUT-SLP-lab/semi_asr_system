@@ -23,29 +23,21 @@ baseurl = f"http://{os.getenv('ASR_SYSTEM_IP')}:{os.getenv('ASR_SYSTEM_PORT')}/a
 # text_pathとstatusを更新する
 def updateTextFilePath(path):
     check_process_queue = collection.find_one({"status": "processing"})
-
-    check_unprocessed_queue = collection.find_one({"status": "unprocessed"})
-
     # processingのqueueがあった時
     if check_process_queue:
         id = ObjectId(check_process_queue["_id"])
         response = collection.update_one({"_id": id}, {"$set": {"text_path": path.text_path, "status": "completed"}})
-        if not check_unprocessed_queue:
-            return response.modified_count
-        else:
-            # unprocessedのqueueがあった時、ASRsystemにそのqueueを投げる
-            _id = ObjectId(check_unprocessed_queue["_id"])
-            data = postAudioData(_id)
-            return data
-
+        return response.modified_count
     # processingのqueueがなかった時
     else:
-        if not check_unprocessed_queue:
-            return "not processing queue"
-        else:
-            _id = ObjectId(check_unprocessed_queue["_id"])
-            data = postAudioData(_id)
-            return data
+        return "not processing queue"
+
+
+def getNextProcessId():
+    check_unprocessed_queue = collection.find_one({"status": "unprocessed"})
+    if not check_unprocessed_queue:
+        return None
+    return check_unprocessed_queue["_id"]
 
 
 # _idからデータを取得してASRシステムに送る
@@ -60,7 +52,7 @@ def postAudioData(id):
     print("send data to asr system")
     pooling_data = {"attribute": response["attribute"], "audio_path": response["audio_path"]}
     result = requests.post(f"{baseurl}/inference", json=pooling_data)
-    print(f"asr system responce: {result.json()}")
+    print(f"asr system response: {result.json()}")
     collection.update_one({"_id": id}, {"$set": {"status": "processing", "add_time": datetime.datetime.now()}})
     return "pooling"
 
@@ -79,6 +71,9 @@ def reRun():
     processing_data = collection.find_one({"status": "processing"})
     if processing_data:
         return postAudioData(processing_data["_id"])
+    check_unprocessed_queue = collection.find_one({"status": "unprocessed"})
+    if check_unprocessed_queue:
+        return postAudioData(check_unprocessed_queue["_id"])
 
 
 # 定期実行されるべきもの
