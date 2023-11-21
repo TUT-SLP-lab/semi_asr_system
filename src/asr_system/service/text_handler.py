@@ -57,12 +57,12 @@ def attach_mark(input_list):
 class TextHandler:
     def __init__(self) -> None:
 
-        self.outline_clinet = OutlineClient()
+        self.outline_client = OutlineClient()
         self.dispatcher_client = DispacherClient()
         self.local_output_path = getenv("TEXT_OUTPUT")
-        
-    def initialize_document(self, title:str):
-        self.document_id = self.outline_clinet.create_document(title)
+
+    def initialize_document(self, title: str):
+        self.document_id = self.outline_client.create_document(title)
 
     def write_text(self, text_list: List, file_name: str):
         file_path = f"{self.local_output_path}/{file_name}"
@@ -72,7 +72,7 @@ class TextHandler:
         self.dispatcher_client.nofity_finish_send_text(file_path)
 
     def send_text_outline(self, text: str):
-        self.outline_clinet.update_document(text, self.document_id)
-        
+        self.outline_client.update_document(text, self.document_id)
+
     def final_send_text_outline(self, text_list: List[str]):
-        self.outline_clinet.final_update(text_list, self.document_id)
+        self.outline_client.final_update(text_list, self.document_id)
